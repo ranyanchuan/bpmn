@@ -1,0 +1,77 @@
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/*表格head*/
+.ant-table-thead {
+  background-color: #fafafa;
+}
+
+.table-operations {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.table-operations > button {
+  margin-right: 8px;
+}
+
+/*.ant-tabs-bar {*/
+  /*margin-bottom: 0px;*/
+/*}*/
+
+.ant-advanced-search-form {
+  padding: 8px;
+  background: #fbfbfb;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+}
+
+.ant-advanced-search-form .ant-form-item {
+  display: flex;
+}
+
+.ant-advanced-search-form .ant-form-item-control-wrapper {
+  flex: 1;
+}
+
+.search-body {
+  padding-top: 0px;
+}
+
+.search-footer {
+  text-align: right;
+  /*margin-top: -16px;*/
+}
+
+/*搜索面板样式*/
+.search-body .ant-advanced-search-form .ant-col {
+  /*background-color: #108ee9;*/
+  height: 40px;
+}
+
+/*返回顶部按钮*/
+.ant-back-top {
+  right: 18px !important;
+  margin-bottom: 80px;
+}
+
+/*modal 弹框 确定*/
+.ant-spin-nested-loading {
+  margin-bottom: -24px;
+}
+
+
+/*输入框框高*/
+.ant-form-item-control {
+  line-height: 35px;
+}
+
+.ant-form-item {
+  margin-bottom: 10px;
+}
