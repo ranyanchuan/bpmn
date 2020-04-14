@@ -13,6 +13,7 @@ export default {
       routes: [
         {path: '/', redirect: '/designer'},
         {path: '/designer', component: './designer/components/'},
+        {path: '/containers-i18n', component: './containers-i18n/'},
         {path: '/404', component: './404'},
         {path: '/403', component: './403'},
         {path: '/500', component: './500'},

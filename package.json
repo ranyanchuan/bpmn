@@ -17,6 +17,8 @@
     "eslint-plugin-react": "^7.11.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
+    "node-sass": "^4.13.1",
+    "sass-loader": "^8.0.2",
     "umi": "^2.1.2",
     "umi-plugin-react": "^1.1.1"
   },
@@ -30,6 +32,9 @@
   },
   "dependencies": {
     "antd": "3.26.6",
+    "bpmn-js": "^6.4.1",
+    "bpmn-js-properties-panel": "^0.33.2",
+    "camunda-bpmn-moddle": "^3.0.0",
     "dva": "2.4.1",
     "dva-logger": "1.0.0",
     "echarts": "4.6.0",

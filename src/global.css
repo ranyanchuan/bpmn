@@ -7,6 +7,19 @@ body {
   margin: 0;
 }
 
+.ant-layout{
+  height: 100%;
+}
+
+/*流程相关*/
+.bjs-container .bjs-powered-by {
+  display: none !important;
+}
+
+.djs-palette.two-column.open {
+  width: 47px;
+}
+
 /*表格head*/
 .ant-table-thead {
   background-color: #fafafa;
@@ -22,7 +35,7 @@ body {
 }
 
 /*.ant-tabs-bar {*/
-  /*margin-bottom: 0px;*/
+/*margin-bottom: 0px;*/
 /*}*/
 
 .ant-advanced-search-form {
@@ -65,7 +78,6 @@ body {
 .ant-spin-nested-loading {
   margin-bottom: -24px;
 }
-
 
 /*输入框框高*/
 .ant-form-item-control {
