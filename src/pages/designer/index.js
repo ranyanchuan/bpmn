@@ -4,8 +4,8 @@ import propertiesPanelModule from 'bpmn-js-properties-panel';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 import EditingTools from './EditingTools';
-import BpmnModeler from './modeler';
-import { diagramXML } from './sources/xml';
+import BpmnModeler from './Modeler'; //流程设计器
+import { diagramXML } from '../../assets/xml';
 
 import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -15,12 +15,9 @@ import styles from './index.less';
 
 export default class Bpmn extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-      scale: 1, // 流程图比例
-    };
-  }
+  state = {
+    scale: 1, // 流程图比例
+  };
 
   componentDidMount() {
     this.bpmnModeler = new BpmnModeler({
@@ -143,7 +140,7 @@ export default class Bpmn extends Component {
   render() {
     return (
       <div style={{ height: '100%' }}>
-        <div className={styles.bpmContainer} id="canvas" style={{height: '680px'  }}/>
+        <div id="canvas" style={{ height: '680px' }}/>
         <div
           className={styles.propertiesPanelParent}
           id="properties-panel"

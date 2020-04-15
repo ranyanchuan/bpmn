@@ -1,14 +1,12 @@
 import Modeler from 'bpmn-js/lib/Modeler';
 
 import { assign, isArray } from 'min-dash';
-
 import inherits from 'inherits';
 
-import CustomTranslate from './customTranslate';
+import CustomTranslate from './CustomTranslate';
 
 export default function CustomModeler(options) {
   Modeler.call(this, options);
-
   this.customElements = [];
 }
 
@@ -17,9 +15,7 @@ inherits(CustomModeler, Modeler);
 
 CustomModeler.prototype._modules = [].concat(
   CustomModeler.prototype._modules,
-  [
-    CustomTranslate
-  ]
+  [CustomTranslate],
 );
 
 /**
@@ -27,7 +23,7 @@ CustomModeler.prototype._modules = [].concat(
  *
  * @param {Object} customElement
  */
-CustomModeler.prototype.addCustomShape = function (customElement) {
+CustomModeler.prototype.addCustomShape = function(customElement) {
   this.customElements.push(customElement);
 
   const canvas = this.get('canvas');
@@ -40,7 +36,9 @@ CustomModeler.prototype.addCustomShape = function (customElement) {
   return canvas.addShape(customShape);
 };
 
-CustomModeler.prototype.addCustomConnection = function (customElement) {
+
+
+CustomModeler.prototype.addCustomConnection = function(customElement) {
   this.customElements.push(customElement);
 
   const canvas = this.get('canvas');
@@ -53,9 +51,9 @@ CustomModeler.prototype.addCustomConnection = function (customElement) {
     'connection',
     assign(customAttrs, {
       source: elementRegistry.get(customElement.source),
-      target: elementRegistry.get(customElement.target)
+      target: elementRegistry.get(customElement.target),
     }),
-    elementRegistry.get(customElement.source).parent
+    elementRegistry.get(customElement.source).parent,
   );
 
   return canvas.addConnection(connection);
@@ -66,7 +64,7 @@ CustomModeler.prototype.addCustomConnection = function (customElement) {
  *
  * @param {Array<Object>} customElements
  */
-CustomModeler.prototype.addCustomElements = function (customElements) {
+CustomModeler.prototype.addCustomElements = function(customElements) {
   if (!isArray(customElements)) {
     throw new Error('argument must be an array');
   }
@@ -94,7 +92,7 @@ CustomModeler.prototype.addCustomElements = function (customElements) {
  *
  * @return {Array<Object>} custom elements on the diagram
  */
-CustomModeler.prototype.getCustomElements = function () {
+CustomModeler.prototype.getCustomElements = function() {
   return this.customElements;
 };
 
