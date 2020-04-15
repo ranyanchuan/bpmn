@@ -317,5 +317,8 @@ export default {
   'Candidate Starter Groups': '候选组',
   'Candidate Starter Configuration': '候选配置',
   'Specify more than one user as a comma separated list.': '将多个用户指定为逗号分隔的列表',
+  'Element must have an unique id.': '元素必须有唯一的 id',
+  'Tasklist Configuration': '任务列表配置',
+  'Parameter must have a name': '参数必须有名称',
   'Specify more than one group as a comma separated list.': '将多个组指定为逗号分隔的列表'
 };
