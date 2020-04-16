@@ -21,7 +21,7 @@
 //   'Create Pool/Participant': '创建池/参与者',
 //   'Parallel Multi Instance': '并行多重事件',
 //   'Sequential Multi Instance': '时序多重事件',
-//   'Loop': '循环',
+//   'Loop': '循环',w
 //   'Ad-hoc': '即席',
 //   'Create {type}': '创建 {type}',
 //   'Task': '任务',
