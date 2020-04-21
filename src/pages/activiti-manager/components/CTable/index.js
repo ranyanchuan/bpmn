@@ -159,46 +159,46 @@ class OperationBaojiashangpin extends React.Component {
       },
     },
     {
-      title: '类型',
+      title: '流程定义ID',
       dataIndex: 'leixingname',
       key: 'leixingname',
       // sorter: true,
     },
     {
-      title: '编码',
+      title: '定义名称',
       dataIndex: 'bianma',
       key: 'bianma',
       sorter: true,
     },
 
     {
-      title: '商品名称',
+      title: '定义KEY',
       dataIndex: 'mingcheng',
       key: 'mingcheng',
       sorter: true,
     },
     {
-      title: '规格',
+      title: '定义版本',
       dataIndex: 'guige',
       key: 'guige',
       // sorter: true,
     },
 
     {
-      title: '品牌',
+      title: '部署ID',
       dataIndex: 'pinpai',
       key: 'pinpai',
       // sorter: true,
     },
 
     {
-      title: '计量单位',
+      title: '资源名称[bpmn]',
       dataIndex: 'danweiname',
       key: 'danweiname',
       // sorter: true,
     },
     {
-      title: '单价',
+      title: '资源名称[svg]',
       dataIndex: 'danjia',
       key: 'danjia',
       align: 'right',
