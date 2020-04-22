@@ -1,4 +1,4 @@
-import {message} from 'antd';
+import { message } from 'antd';
 import fetch from 'dva/fetch';
 import router from 'umi/router';
 
@@ -27,17 +27,18 @@ function checkStatus(response) {
 export function requestJson(url, options) {
   let headers = {
     'Content-Type': 'application/json',
-    'Authorization': localStorage.getItem("token"),
+    'Authorization': localStorage.getItem('token'),
   };
 
   return fetch(url, {
     headers: headers,
-    ...options
+    ...options,
 
   })
     .then(checkStatus)
     .then(parseJSON)
     .then((data) => {
+      const { code ,info} = data;
       // todo 权限管理
       if (code == 104) { // 无权限
         message.error(info);
@@ -45,7 +46,7 @@ export function requestJson(url, options) {
       }
       return data;
     })
-    .catch(err => ({err}));
+    .catch(err => ({ err }));
 }
 
 

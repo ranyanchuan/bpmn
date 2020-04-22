@@ -12,13 +12,14 @@ import Search from './Search';
 const ruleDate = 'YYYY-MM-DD HH:mm:ss';
 const confirm = Modal.confirm;
 import styles from './index.less';
+import ProductApp from '../../find/components';
 
 
 @connect((state) => ({
   activitiManagerModel: state.activitiManagerModel,
 }))
 
-class ProductApp extends React.Component {
+class App extends React.Component {
 
   state = {
     rowId: '', //  当前行 id
@@ -29,16 +30,14 @@ class ProductApp extends React.Component {
   };
 
   componentDidMount() {
-
     this.getData();
-
   }
 
   // 获取数据
-  getData = (payload) => {
+  getData = (payload={}) => {
     this.setState({ loading: true });
     this.props.dispatch({
-      type: 'activitiManagerModel/getData',
+      type: 'activitiManagerModel/getMainData',
       payload,
       callback: (data) => {
         let stateTemp = { loading: false };
@@ -127,18 +126,18 @@ class ProductApp extends React.Component {
     },
     {
       title: '部署ID',
-      dataIndex: 'cunzhengren',
-      key: 'cunzhengren',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
       title: '部署名称',
-      dataIndex: 'cunzhengshuliang',
-      key: 'cunzhengshuliang',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '部署时间',
-      dataIndex: 'cunzhengleixing',
-      key: 'cunzhengleixing',
+      dataIndex: 'deploymentTime',
+      key: 'deploymentTime',
     },
 
 
@@ -184,8 +183,11 @@ class ProductApp extends React.Component {
     const { loading, visible, status, modalDataObj, activeKey, rowId, auditVisible } = this.state;
 
 
-    const { appData } = this.props.activitiManagerModel;
-    const { pageIndex, total, pageSize, rows } = appData;
+    const { mainData } = this.props.activitiManagerModel;
+    const { pageIndex, total, pageSize, rows } = mainData;
+
+    console.log("mainData",mainData);
+
     return (
       <div className={styles.home}>
         <Spin spinning={false}>
@@ -207,26 +209,24 @@ class ProductApp extends React.Component {
             basicData={status !== 'add' ? modalDataObj : {}}
           />
 
-            {/*查看流程部署*/}
-            <Table
-              className={styles.table}
-              rowKey={record => record.id.toString()}
-              // rowSelection={rowSelection}
-              columns={this.columns}
-              size="small"
-              dataSource={rows}
-              pagination={{
-                current: pageIndex,
-                total,
-                pageSize,
-              }}
-              // loading={loading}
-              onChange={this.onChangePage}
-            />
+          {/*查看流程部署*/}
+          <Table
+            className={styles.table}
+            rowKey={record => record.id.toString()}
+            // rowSelection={rowSelection}
+            columns={this.columns}
+            size="small"
+            dataSource={rows}
+            pagination={{
+              current: pageIndex,
+              total,
+              pageSize,
+            }}
+            // loading={loading}
+            onChange={this.onChangePage}
+          />
 
           {/*查看流程定义*/}
-
-
           {/*<CTable pid={rowId} pObj={modalDataObj} actionStatus={true}/>*/}
           {/*<CTable pid={rowId} pObj={modalDataObj} actionStatus={true}/>*/}
 
@@ -236,4 +236,4 @@ class ProductApp extends React.Component {
   }
 }
 
-export default ProductApp;
+export default App;
