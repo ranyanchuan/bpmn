@@ -3,16 +3,11 @@ import { connect } from 'dva';
 import { Button, Modal, Table, Divider, Spin } from 'antd';
 import { checkError, checkEdit, getPageParam } from 'utils';
 import ActionModal from './Modal';
-import CTable from './CTable';
-import moment from 'moment';
-import router from 'umi/router';
-
+// import CTable from './CTable';
 import Search from './Search';
 
-const ruleDate = 'YYYY-MM-DD HH:mm:ss';
 const confirm = Modal.confirm;
 import styles from './index.less';
-import ProductApp from '../../find/components';
 
 
 @connect((state) => ({
@@ -30,15 +25,18 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.getData();
+    this.getMainData();
   }
 
   // 获取数据
-  getData = (payload={}) => {
+  getMainData = (payload = {}) => {
     this.setState({ loading: true });
+    const searchObj = this.childSearch.getSearchValue();
+    // 获取分页数,分页数量
+    const { pageNumber,pageSize } = this.props.activitiManagerModel.mainData;
     this.props.dispatch({
       type: 'activitiManagerModel/getMainData',
-      payload,
+      payload:{pageNumber,pageSize,...searchObj,...payload },
       callback: (data) => {
         let stateTemp = { loading: false };
         this.setState(stateTemp);
@@ -48,13 +46,13 @@ class App extends React.Component {
 
 
   // 删除表格数据
-  delAppData = (payload) => {
+  delMainData = (payload) => {
     this.props.dispatch({
-      type: 'activitiManagerModel/delApp',
-      payload,
+      type: 'activitiManagerModel/delMainData',
+      payload: { deploymentId: payload.id },
       callback: (value) => {
         if (checkError(value)) {
-          this.getData();
+          this.getMainData();
         }
       },
     });
@@ -69,7 +67,7 @@ class App extends React.Component {
         let temp = false;
         if (checkError(value)) {
           temp = true;
-          this.getData();
+          this.getMainData();
         }
         callback(temp);
       },
@@ -78,8 +76,8 @@ class App extends React.Component {
 
 
   // 搜索面板值
-  onSearchPannel = (param) => {
-    this.getData({ ...param });
+  onSearchPanel = (param) => {
+    this.getMainData({ ...param });
   };
 
 
@@ -91,9 +89,8 @@ class App extends React.Component {
 
   // 修改分页
   onChangePage = (data) => {
-    const searchObj = this.child.getSearchValue();
     // 获取分页数据
-    this.getData({ ...getPageParam(data), ...searchObj });
+    this.getMainData({ ...getPageParam(data) });
   };
 
   // 删除弹框确认
@@ -107,7 +104,7 @@ class App extends React.Component {
       cancelText: '否',
       onOk() {
         // 删除数据
-        _this.delAppData(payload);
+        _this.delMainData(payload);
       },
       onCancel() {
         console.log('取消删除');
@@ -124,23 +121,54 @@ class App extends React.Component {
         return index + 1;
       },
     },
+    // {
+    //   title: '部署ID',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    // },
     {
-      title: '部署ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: '流程定义ID',
+      dataIndex: 'processDefinitionId',
+      key: 'processDefinitionId',  //   流程定义key+流程定义version+部署ID
     },
+
     {
       title: '部署名称',
       dataIndex: 'name',
       key: 'name',
     },
     {
+      title: '流程名称',
+      dataIndex: 'processDefinitionName',
+      key: 'processDefinitionName',
+    },
+
+    {
+      title: '流程KEY',
+      dataIndex: 'key',
+      key: 'key',
+    },
+    {
+      title: '流程版本',
+      dataIndex: 'version',
+      key: 'version',
+    },
+
+    {
+      title: '资源名称[bpmn]',
+      dataIndex: 'resourceName',
+      key: 'resourceName',
+    },
+    {
+      title: '资源名称[svg]',
+      dataIndex: 'diagramResourceName',
+      key: 'diagramResourceName',
+    },
+    {
       title: '部署时间',
       dataIndex: 'deploymentTime',
       key: 'deploymentTime',
     },
-
-
     {
       title: '操作',
       dataIndex: 'action',
@@ -149,7 +177,7 @@ class App extends React.Component {
         <span>
            <a onClick={this.showDelCon.bind(this, record)}>删除</a>
            <Divider type="vertical"/>
-            <a onClick={this.onShowModal.bind(this, 'edit', record)}>查看流程</a>
+           <a onClick={this.onShowModal.bind(this, 'edit', record)}>查看流程</a>
        </span>
       ),
     },
@@ -161,39 +189,17 @@ class App extends React.Component {
     this.setState({ visible: false, status: 'add' });
   };
 
-  // 搜索面板值
-  onSearchPannel = (param) => {
-    this.getData({ ...param });
-  };
-
-  // 展示弹框
-  onShowModal = (status, record) => {
-    this.setState({ visible: true, status, modalDataObj: record });
-  };
-
-  // 修改分页
-  onChangePage = (data) => {
-    const searchObj = this.child.getSearchValue();
-    // 获取分页数据
-    this.getBd_diquData({ ...getPageParam(data), ...searchObj });
-  };
-
 
   render() {
-    const { loading, visible, status, modalDataObj, activeKey, rowId, auditVisible } = this.state;
-
-
+    const { loading, visible, status, modalDataObj } = this.state;
     const { mainData } = this.props.activitiManagerModel;
-    const { pageIndex, total, pageSize, rows } = mainData;
-
-    console.log("mainData",mainData);
-
+    const { pageNumber, total, pageSize, rows } = mainData;
     return (
       <div className={styles.home}>
-        <Spin spinning={false}>
+        <Spin spinning={loading}>
 
           <Search
-            onSearch={this.onSearchPannel}
+            onSearch={this.onSearchPanel}
             onRef={(value) => this.childSearch = value}
           />
           <div className="table-operations">
@@ -218,9 +224,13 @@ class App extends React.Component {
             size="small"
             dataSource={rows}
             pagination={{
-              current: pageIndex,
+
+              showSizeChanger: true,
+              defaultPageSize: pageSize,
+              pageSizeOptions: ['10', '20', '50', '100', '500'],
+              current: pageNumber,
               total,
-              pageSize,
+              pageSize: pageSize,
             }}
             // loading={loading}
             onChange={this.onChangePage}

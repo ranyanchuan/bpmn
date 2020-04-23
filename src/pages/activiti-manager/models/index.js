@@ -16,6 +16,9 @@ export default {
     mainData: {
       ...initTable,
     },
+    childData: {
+      ...initTable,
+    },
   },
 
 
@@ -35,8 +38,6 @@ export default {
     //  获取主表数据
     * getMainData({ payload, callback }, { call, put, select }) {
       const { data } = yield call(services.getDeployment, payload);
-
-      debugger
       let mainData = initTable;
       if (data) {
         mainData = data;
@@ -48,13 +49,35 @@ export default {
     },
 
 
-    // 添加区块
-    * addData({ payload, callback }, { call, put, select }) {
-      const data = yield call(services.addBlock, payload);
+    // 删除一条主表数据
+    * delMainData({ payload, callback }, { call, put, select }) {
+      const data = yield call(services.delDeployment, payload);
       if (callback) {
         callback(data);
       }
     },
+
+
+
+    //  获取子表数据
+    * getChildData({ payload, callback }, { call, put, select }) {
+      const { data } = yield call(services.getDefinition, payload);
+
+      let childData = initTable;
+      if (data) {
+        childData = data;
+        yield put({ type: 'updateState', res: { childData } });
+      }
+      if (callback) {
+        callback(data);
+      }
+    },
+
+
+
+
+
+
 
   },
 

@@ -262,8 +262,8 @@ export function checkError(value) {
 export function getPageParam(data) {
   const { current, pageSize } = data;
   return {
-    pageIndex: current,
-    pageSize,
+    pageNumber: current-1,
+    pageSize:pageSize,
   };
 }
 
