@@ -1,18 +1,18 @@
 /* eslint-disable padded-blocks,object-curly-spacing */
 import React, { Component } from 'react';
-// import propertiesPanelModule from 'bpmn-js-properties-panel';
-import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
-// import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
+import { connect } from 'dva';
+
 import EditingTools from './EditingTools';
 import BpmnModeler from './Modeler'; //流程设计器
-// import { diagramXML } from '../../assets/xml';
-import { diagramXML } from './newDiagram.js';
-
 import customTranslate from './workflow/customTranslate/customTranslate';
 import propertiesPanelModule from './workflow/properties-panel';
 import propertiesProviderModule from './workflow/properties-panel/provider/activiti';
 import customControlsModule from './workflow/customControls';
-import activitiModdleDescriptor from './activiti.json';
+
+import activitiModdleDescriptor from '../assets/activiti.json';
+import { diagramXML } from '../assets/diagram.js';
+
+import { checkError, checkEdit, getPageParam } from 'utils';
 
 import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -20,6 +20,9 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './index.less';
 
 
+@connect((state) => ({
+  activitiDesignerModel: state.activitiDesignerModel,
+}))
 
 
 export default class Bpmn extends Component {
@@ -31,7 +34,7 @@ export default class Bpmn extends Component {
   componentDidMount() {
 
     let customTranslateModule = {
-      translate: ['value', customTranslate]
+      translate: ['value', customTranslate],
     };
 
 
@@ -44,17 +47,36 @@ export default class Bpmn extends Component {
         propertiesPanelModule,
         propertiesProviderModule,
         customTranslateModule,
-        customControlsModule
+        customControlsModule,
       ],
       moddleExtensions: {
-        // camunda: camundaModdleDescriptor,
-        activiti: activitiModdleDescriptor
+        activiti: activitiModdleDescriptor,
       },
     });
 
     this.renderDiagram(diagramXML);
+    // 通过字符生成 getProcessImg
+    this.getProcessImg({ deploymentId: '15001' });
+
   }
 
+
+  // todo 动态 判断
+  // 获取流程图片
+  getProcessImg = (payload = {}) => {
+    this.props.dispatch({
+      type: 'activitiDesignerModel/getProcessImg',
+      payload,
+      callback: (result) => {
+        let stateTemp = { loading: false };
+        if (checkError(result)) {
+          const { data } = result;
+          this.renderDiagram(data, 'open');
+        }
+        this.setState(stateTemp);
+      },
+    });
+  };
 
 
   /**
@@ -99,7 +121,7 @@ export default class Bpmn extends Component {
     reader.readAsText(file);
     reader.onload = function(event) {
       data = event.target.result;
-      that.renderDiagram(test, 'open');
+      that.renderDiagram(data, 'open');
     };
   };
 
@@ -166,7 +188,7 @@ export default class Bpmn extends Component {
         <div id="canvas" style={{ height: '680px' }}/>
         <div
           className={styles.propertiesPanelParent}
-          style={{ height: '100%',}}
+          style={{ height: '100%' }}
           id="js-properties-panel"
         />
         <EditingTools

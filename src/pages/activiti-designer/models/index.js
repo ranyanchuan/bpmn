@@ -21,7 +21,6 @@ export default {
 
   effects: {
 
-
     // 获取流程图片
     * getProcessImg({ payload, callback }, { call, put, select }) {
       const data = yield call(services.getProcessImg, payload);
@@ -30,7 +29,7 @@ export default {
       }
     },
 
-
+    
   },
 
 
