@@ -57,6 +57,15 @@ export default {
       }
     },
 
+    // 获取流程图片
+    * getProcessImg({ payload, callback }, { call, put, select }) {
+      const data = yield call(services.getProcessImg, payload);
+      if (callback) {
+        callback(data);
+      }
+    },
+
+
 
 
     //  获取子表数据

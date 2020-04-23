@@ -1,12 +1,12 @@
 /* eslint-disable padded-blocks,object-curly-spacing */
 import React, { Component } from 'react';
+// import propertiesPanelModule from 'bpmn-js-properties-panel';
+import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
+// import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 import EditingTools from './EditingTools';
 import BpmnModeler from './Modeler'; //流程设计器
-
+// import { diagramXML } from '../../assets/xml';
 import { diagramXML } from './newDiagram.js';
-
-import { checkError, checkEdit, getPageParam } from 'utils';
-
 
 import customTranslate from './workflow/customTranslate/customTranslate';
 import propertiesPanelModule from './workflow/properties-panel';
@@ -18,12 +18,8 @@ import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './index.less';
-import { connect } from 'dva';
 
 
-@connect((state) => ({
-  activitiDesignerModel: state.activitiDesignerModel,
-}))
 
 
 export default class Bpmn extends Component {
@@ -51,35 +47,13 @@ export default class Bpmn extends Component {
         customControlsModule
       ],
       moddleExtensions: {
+        // camunda: camundaModdleDescriptor,
         activiti: activitiModdleDescriptor
       },
     });
 
-    // this.renderDiagram(diagramXML);
-    // 通过字符生成 getProcessImg
-    this.getProcessImg({deploymentId: '15001'})
-
+    this.renderDiagram(diagramXML);
   }
-
-
-  // 获取流程图片
-  getProcessImg = (payload = {}) => {
-    this.props.dispatch({
-      type: 'activitiDesignerModel/getProcessImg',
-      payload,
-      callback: (result) => {
-        let stateTemp = { loading: false };
-        if (checkError(result)) {
-          const { data } = result;
-          console.log('data', data);
-          // stateTemp.processImg=data;
-          this.renderDiagram(data, 'open');
-        }
-        this.setState(stateTemp);
-      },
-    });
-  };
-
 
 
 
@@ -125,7 +99,7 @@ export default class Bpmn extends Component {
     reader.readAsText(file);
     reader.onload = function(event) {
       data = event.target.result;
-      that.renderDiagram(data, 'open');
+      that.renderDiagram(test, 'open');
     };
   };
 

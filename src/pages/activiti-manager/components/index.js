@@ -21,6 +21,7 @@ class App extends React.Component {
     loading: false,
     visible: false,
     status: 'add',
+    processImg:'',
     modalDataObj: {}, //  弹框数据
   };
 
@@ -33,10 +34,10 @@ class App extends React.Component {
     this.setState({ loading: true });
     const searchObj = this.childSearch.getSearchValue();
     // 获取分页数,分页数量
-    const { pageNumber,pageSize } = this.props.activitiManagerModel.mainData;
+    const { pageNumber, pageSize } = this.props.activitiManagerModel.mainData;
     this.props.dispatch({
       type: 'activitiManagerModel/getMainData',
-      payload:{pageNumber,pageSize,...searchObj,...payload },
+      payload: { pageNumber, pageSize, ...searchObj, ...payload },
       callback: (data) => {
         let stateTemp = { loading: false };
         this.setState(stateTemp);
@@ -72,6 +73,30 @@ class App extends React.Component {
         callback(temp);
       },
     });
+  };
+
+
+  // 获取流程图片
+  getProcessImg = (payload = {}) => {
+    this.props.dispatch({
+      type: 'activitiManagerModel/getProcessImg',
+      payload,
+      callback: (result) => {
+        let stateTemp = { loading: false };
+        if (checkError(result)) {
+          const { data } = result;
+          console.log('data', data);
+          stateTemp.processImg=data;
+        }
+        this.setState(stateTemp);
+      },
+    });
+  };
+
+
+  //  onShowProcess
+  onShowProcess = (data) => {
+    this.getProcessImg({ deploymentId: data.id });
   };
 
 
@@ -177,7 +202,7 @@ class App extends React.Component {
         <span>
            <a onClick={this.showDelCon.bind(this, record)}>删除</a>
            <Divider type="vertical"/>
-           <a onClick={this.onShowModal.bind(this, 'edit', record)}>查看流程</a>
+           <a onClick={this.onShowProcess.bind(this, record)}>查看流程</a>
        </span>
       ),
     },
@@ -191,13 +216,15 @@ class App extends React.Component {
 
 
   render() {
-    const { loading, visible, status, modalDataObj } = this.state;
+    const { loading, visible, status, modalDataObj,processImg } = this.state;
     const { mainData } = this.props.activitiManagerModel;
     const { pageNumber, total, pageSize, rows } = mainData;
     return (
       <div className={styles.home}>
         <Spin spinning={loading}>
-
+          {processImg &&
+          <img src={processImg} alt=""/>
+          }
           <Search
             onSearch={this.onSearchPanel}
             onRef={(value) => this.childSearch = value}
