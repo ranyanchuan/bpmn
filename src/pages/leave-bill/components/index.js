@@ -1,16 +1,18 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Input, Table, Spin, Divider, Radio } from 'antd';
+import { Input, Table, Spin, Divider, Radio, Modal } from 'antd';
 import { checkError, checkEdit, getPageParam } from 'utils';
 import moment from 'moment';
 import Search from './Search';
 import ActionModal from './Modal';
+import { Approve } from 'components/ConActiviti';
 
 const ruleTime = 'YYYY-MM-DD HH:mm:ss';
 const ruleDate = 'YYYY-MM-DD';
 
 import styles from './index.less';
 
+const confirm = Modal.confirm;
 
 @connect((state) => ({
   leaveBillModel: state.leaveBillModel,
@@ -26,20 +28,58 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.getMainData();
+    this.getData();
   }
 
 
   // 获取数据
-  getMainData = (payload = {}) => {
+  getData = (payload = {}) => {
     this.setState({ loading: true });
-    const _this = this;
     this.props.dispatch({
       type: 'leaveBillModel/getMainData',
       payload,
       callback: (data) => {
         let stateTemp = { loading: false };
-        _this.setState(stateTemp);
+        this.setState(stateTemp);
+      },
+    });
+  };
+
+  //添加表格数据
+  addData = (payload, callback) => {
+
+
+    const { status, modalDataObj } = this.state;
+    if (status === 'edit') { // 如果是编辑带上id
+      payload.id = modalDataObj.id;
+    }
+
+
+    this.props.dispatch({
+      type: 'leaveBillModel/addMainData',
+      payload,
+      callback: (value) => {
+        let temp = false;
+        if (checkError(value)) {
+          temp = true;
+          this.getData();
+        }
+        callback(temp);
+      },
+    });
+  };
+
+  // 删除表格数据
+  delData = (payload) => {
+    this.setState({ loading: true });
+    this.props.dispatch({
+      type: 'leaveBillModel/delMainData',
+      payload,
+      callback: (value) => {
+        this.setState({ loading: false });
+        if (checkError(value)) {
+          this.getData();
+        }
       },
     });
   };
@@ -47,7 +87,7 @@ class App extends React.Component {
 
   // 搜索面板值
   onSearchPanel = (param) => {
-    this.getMainData({ ...param });
+    this.getData({ ...param });
   };
 
 
@@ -55,7 +95,7 @@ class App extends React.Component {
   onChangePage = (data) => {
     const searchObj = this.child.getSearchValue();
     // 获取分页数据
-    this.getMainData({ ...getPageParam(data), ...searchObj });
+    this.getData({ ...getPageParam(data), ...searchObj });
   };
 
 
@@ -64,11 +104,39 @@ class App extends React.Component {
 
   };
 
-  // 删除提示
-  showDelCon = () => {
+  // 更新
+  onClickUpd = (data) => {
+    this.setState({ modalDataObj: data, status: 'edit', visible: true });
+  };
+
+  onClickAddShow = () => {
+    this.setState({ status: 'add', visible: true });
 
   };
 
+  onClickClose = () => {
+    this.setState({ visible: false });
+  };
+
+
+  // 删除弹框确认
+  showDelCon = (payload) => {
+    const _this = this;
+    confirm({
+      title: '您确定要删除吗',
+      content: '',
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      onOk() {
+        // 删除数据
+        _this.delData(payload);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
 
   columns = [
     {
@@ -122,9 +190,9 @@ class App extends React.Component {
       key: 'action',
       render: (text, record) => (
         <span>
-           <a onClick={this.onClickSubmit.bind(this, record)}>提交</a>
+          <a onClick={this.onClickSubmit.bind(this, record)}>提交</a>
           <Divider type="vertical"/>
-          <a onClick={this.showDelCon.bind(this, record)}>修改</a>
+          <a onClick={this.onClickUpd.bind(this, record)}>修改</a>
           <Divider type="vertical"/>
           <a onClick={this.showDelCon.bind(this, record)}>删除</a>
           <Divider type="vertical"/>
@@ -140,19 +208,9 @@ class App extends React.Component {
   ];
 
 
-  onClickAddShow = () => {
-    // console.log("value",e,e.target.value );
-    this.setState({ status: 'add', visible: true });
-
-  };
-
-  onClickClose = () => {
-    this.setState({ visible: false });
-  };
-
   render() {
 
-    const { loading, visible, modalDataObj,status } = this.state;
+    const { loading, visible, modalDataObj, status } = this.state;
     const { mainData } = this.props.leaveBillModel;
     const { pageNumber, total, pageSize, rows } = mainData;
 
@@ -206,6 +264,12 @@ class App extends React.Component {
             // loading={loading}
             onChange={this.onChangePage}
           />
+
+          <Approve
+
+
+          />
+
         </Spin>
       </div>
     );

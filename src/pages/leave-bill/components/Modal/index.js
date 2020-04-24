@@ -1,7 +1,5 @@
 import React from 'react';
 import {Form, Modal, Row, Col, Spin} from 'antd';
-
-import ConInput from 'components/ConInput';
 import ConSelect from 'components/ConSelect';
 import ConInputNumber from 'components/ConInputNumber';
 import ConTextArea from 'components/ConTextArea';

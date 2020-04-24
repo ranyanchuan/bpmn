@@ -48,15 +48,19 @@ export default {
 
 
     // 添加
-    * addData({payload, callback}, {call, put, select}) {
+    * addMainData({payload, callback}, {call, put, select}) {
       const data = yield call(services.addLeaveBill, payload);
       if (callback) {
         callback(data);
       }
     },
-
-
-
+    // 删除
+    * delMainData({payload, callback}, {call, put, select}) {
+      const data = yield call(services.delLeaveBill, payload);
+      if (callback) {
+        callback(data);
+      }
+    },
 
   },
 

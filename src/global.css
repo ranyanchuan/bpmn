@@ -11,15 +11,6 @@ body {
   height: 100%;
 }
 
-/*流程相关*/
-.bjs-container .bjs-powered-by {
-  display: none !important;
-}
-
-.djs-palette.two-column.open {
-  width: 47px;
-}
-
 /*表格head*/
 .ant-table-thead {
   background-color: #fafafa;
