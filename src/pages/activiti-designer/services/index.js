@@ -7,7 +7,6 @@ const api = {
   getProcessImg: '/api/bpm/select/processImg', // 查看流程图片
 };
 
-
 export async function getDeployment(payload) {
   return requestJson(api.getDeployment, {
     method: 'POST',
