@@ -1,20 +1,22 @@
 /* eslint-disable padded-blocks,object-curly-spacing */
 import React, { Component } from 'react';
+import { requestJson } from 'utils/request';
+
 import EditingTools from '../EditingTools';
 import BpmnModeler from '../Modeler'; //流程设计器
-import customTranslate from '../workflow/customTranslate/customTranslate';
-import propertiesPanelModule from '../workflow/properties-panel';
-import propertiesProviderModule from '../workflow/properties-panel/provider/activiti';
-import customControlsModule from '../workflow/customControls';
+// import customTranslate from '../workflow/customTranslate/customTranslate';
+// import propertiesPanelModule from '../workflow/properties-panel';
+// import propertiesProviderModule from '../workflow/properties-panel/provider/activiti';
+// import customControlsModule from '../workflow/customControls';
 
 import activitiModdleDescriptor from '../Assets/activiti.json';
 import { diagramXML } from '../Assets/diagram.js';
 
 import { checkError, checkEdit, getPageParam } from 'utils';
 
-import 'bpmn-js-properties-panel/styles/properties.less';
-import 'bpmn-js/dist/assets/diagram-js.css';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+// import 'bpmn-js-properties-panel/styles/properties.less';
+// import 'bpmn-js/dist/assets/diagram-js.css';
+// import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from '../index.less';
 
 export default class App extends Component {
@@ -25,30 +27,56 @@ export default class App extends Component {
 
   componentDidMount() {
 
-    let customTranslateModule = {
-      translate: ['value', customTranslate],
-    };
+    // let customTranslateModule = {
+    //   translate: ['value', customTranslate],
+    // };
 
 
     this.bpmnModeler = new BpmnModeler({
-      container: '#canvas',
-      additionalModules: [
-        propertiesPanelModule,
-        propertiesProviderModule,
-        customTranslateModule,
-        customControlsModule,
-      ],
+      container: '#approveCanvas',
       moddleExtensions: {
         activiti: activitiModdleDescriptor,
       },
     });
 
-    this.renderDiagram(diagramXML);
+
+    // this.renderDiagram(diagramXML);
     // 通过字符生成 getProcessImg
     // this.getProcessImg({ deploymentId: '15001' });
+    this.getDataModel();
+
+
+
+    // var d = document.getElementById( "t" );
+    // document.addEventListener( "keyup", function() {
+    //   d.innerHTML = d.innerHTML.replace( /<[^>]*>/g, "" );
+    // } );
+    //
 
   }
 
+
+  // 获取
+  getDataService = () => {
+    const { url, payload } = this.props;
+    return requestJson(url, {
+      method: 'GET',
+      payload,
+    });
+  };
+
+
+  getDataModel = async () => {
+    this.setState({ loading: true });
+    let result = await this.getDataService();
+    let stateTemp = { loading: false };
+    if (checkError(result)) {
+      const { data } = result;
+      this.renderDiagram(data, 'open');
+    }
+    this.setState(stateTemp);
+
+  };
 
   // todo 动态 判断
   // 获取流程图片
@@ -101,35 +129,6 @@ export default class App extends Component {
     document.body.removeChild(a);
   };
 
-  // 导入xml文件
-  handleOpenFile = (e) => {
-    const that = this;
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    let data = '';
-    reader.readAsText(file);
-    reader.onload = function(event) {
-      data = event.target.result;
-      that.renderDiagram(data, 'open');
-    };
-  };
-
-  // 保存
-  handleSave = () => {
-    this.bpmnModeler.saveXML({ format: true }, (err, xml) => {
-      console.log(xml);
-    });
-  };
-
-  // 前进
-  handleRedo = () => {
-    this.bpmnModeler.get('commandStack').redo();
-  };
-
-  // 后退
-  handleUndo = () => {
-    this.bpmnModeler.get('commandStack').undo();
-  };
 
   // 下载SVG格式
   handleDownloadSvg = () => {
@@ -166,28 +165,61 @@ export default class App extends Component {
         console.log('导入失败');
       } else {
         console.log('导入成功');
+
+
+        // this.bpmnModeler.off(event,callback);
+        let eventBus = this.bpmnModeler.get('eventBus');
+
+
+
+        this.bpmnModeler.triggerClickEvent();
+        let events = [
+          // 'element.click',
+          'element.dblclick',
+          // 'element.hover',
+          // 'element.out',
+          // 'element.mousedown',
+          // 'element.mouseup'
+        ];
+        events.forEach(function(event) {
+          eventBus.on(event, function(e) {
+            // console.log(event, 'on', e.element);
+            let editContent=document.getElementsByClassName('djs-direct-editing-content');
+            if(editContent && editContent.length>0){
+              editContent[0].setAttribute("contenteditable","false");
+            }
+            let editParent=document.getElementsByClassName('djs-direct-editing-parent');
+            if(editParent && editParent.length>0){
+              editParent[0].setAttribute("contenteditable","false");
+            }
+          });
+        });
+
+
+
       }
+
+
+
+
+
+
+
     });
   };
 
   render() {
 
     return (
-      <div style={{ height: '100%', backgroundColor: '#f0f2f5'}}>
-
+      <div style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
         <EditingTools
-          onOpenFIle={this.handleOpenFile}
-          onSave={this.handleSave}
-          onUndo={this.handleUndo}
-          onRedo={this.handleRedo}
           onDownloadSvg={this.handleDownloadSvg}
           onDownloadXml={this.handleDownloadXml}
           onZoomIn={() => this.handleZoom(0.1)}
           onZoomOut={() => this.handleZoom(-0.1)}
           onZoomReset={() => this.handleZoom()}
         />
-
-        <div id="canvas" style={{ height: '680px' }}/>
+        <div id="approveCanvas" style={{ height: '380px' }}/>
       </div>
     );
   }

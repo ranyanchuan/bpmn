@@ -5,7 +5,9 @@ import { checkError, checkEdit, getPageParam } from 'utils';
 import moment from 'moment';
 import Search from './Search';
 import ActionModal from './Modal';
-import { Approve } from 'components/ConActiviti';
+import ApproveModal from './AModal';
+// import { Designer } from 'components/ConActiviti';
+
 
 const ruleTime = 'YYYY-MM-DD HH:mm:ss';
 const ruleDate = 'YYYY-MM-DD';
@@ -23,6 +25,7 @@ class App extends React.Component {
   state = {
     loading: false,
     visible: false,
+    approveVisible: false,
     status: 'add',
     modalDataObj: {}, //  弹框数据
   };
@@ -109,13 +112,18 @@ class App extends React.Component {
     this.setState({ modalDataObj: data, status: 'edit', visible: true });
   };
 
+  // 查看审批面板
+  onClickApprove=()=>{
+    this.setState({ status: 'edit', approveVisible: true });
+  }
+
+  // 添加弹框
   onClickAddShow = () => {
     this.setState({ status: 'add', visible: true });
-
   };
 
   onClickClose = () => {
-    this.setState({ visible: false });
+    this.setState({ visible: false,approveVisible:false });
   };
 
 
@@ -196,9 +204,9 @@ class App extends React.Component {
           <Divider type="vertical"/>
           <a onClick={this.showDelCon.bind(this, record)}>删除</a>
           <Divider type="vertical"/>
-           <a onClick={this.showDelCon.bind(this, record)}>撤回</a>
+           <a onClick={this.onClickApprove.bind(this, record)}>撤回</a>
           <Divider type="vertical"/>
-          <a onClick={this.showDelCon.bind(this, record)}>审批面板</a>
+          <a onClick={this.onClickApprove.bind(this, record)}>审批面板</a>
           <Divider type="vertical"/>
           <a onClick={this.showDelCon.bind(this, record)}>打印预览</a>
        </span>
@@ -210,7 +218,7 @@ class App extends React.Component {
 
   render() {
 
-    const { loading, visible, modalDataObj, status } = this.state;
+    const { loading, visible,approveVisible, modalDataObj, status } = this.state;
     const { mainData } = this.props.leaveBillModel;
     const { pageNumber, total, pageSize, rows } = mainData;
 
@@ -233,6 +241,17 @@ class App extends React.Component {
             onClose={this.onClickClose}
             basicData={status !== 'add' ? modalDataObj : {}}
           />
+
+          {/*查看审批*/}
+          <ApproveModal
+            visible={approveVisible}
+            onSave={this.addData}
+            status={status}
+            onClose={this.onClickClose}
+            basicData={status !== 'add' ? modalDataObj : {}}
+
+          />
+
 
           <div className="table-header-btn">
             <Radio.Group>
@@ -265,11 +284,8 @@ class App extends React.Component {
             onChange={this.onChangePage}
           />
 
-          <Approve
 
-
-          />
-
+          {/*<Designer />*/}
         </Spin>
       </div>
     );

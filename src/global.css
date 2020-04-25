@@ -7,7 +7,7 @@ body {
   margin: 0;
 }
 
-.ant-layout{
+.ant-layout {
   height: 100%;
 }
 
@@ -80,9 +80,22 @@ body {
 }
 
 /*表格按钮*/
-.table-header-btn{
+.table-header-btn {
   text-align: end;
   margin-right: 8px;
   margin-top: 8px;
   margin-bottom: 8px;
+}
+
+/*流程图展示*/
+#approveCanvas .djs-palette.two-column.open {
+  display: none;
+}
+#approveCanvas .djs-context-pad.open {
+  display: none;
+}
+
+/*bpmn logo*/
+.bjs-powered-by{
+  display: none;
 }
