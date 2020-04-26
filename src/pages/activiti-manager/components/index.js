@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Button, Modal, Table, Divider, Spin, Radio } from 'antd';
-import { checkError, checkEdit, getPageParam } from 'utils';
+import { Badge, Modal, Table, Divider, Spin, message } from 'antd';
+import { checkError, checkEdit, getPageParam, delMore } from 'utils';
 import ActionModal from './Modal';
 import DesignerModal from './DModal';
 // import CTable from './CTable';
@@ -26,6 +26,8 @@ class App extends React.Component {
     processImg: '',
     modalDataObj: {}, //  弹框数据
   };
+
+  selectedRow = [];
 
 
   componentDidMount() {
@@ -72,7 +74,7 @@ class App extends React.Component {
       title: '流程版本',
       dataIndex: 'version',
       key: 'version',
-      align:'right'
+      align: 'right',
     },
 
     {
@@ -91,13 +93,24 @@ class App extends React.Component {
       key: 'deploymentTime',
     },
     {
+      title: '流程状态',
+      dataIndex: 'state',
+      key: 'state',
+      render: (text, record) => (
+        <span>
+         {/*<Badge status="success" text="启用" />*/}
+         {/*<Badge status="error" text="停用" />*/}
+         <Badge status="processing" text="未发布" />
+       </span>
+      ),
+    },
+
+    {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
       render: (text, record) => (
         <span>
-           <a onClick={this.showDelCon.bind(this, record)}>删除</a>
-           <Divider type="vertical"/>
            <a onClick={this.onDesignerProcess.bind(this, record)}>设计</a>
        </span>
       ),
@@ -122,12 +135,12 @@ class App extends React.Component {
     });
   };
 
-
   // 删除表格数据
   delMainData = (payload) => {
+    const { id } = delMore(payload);
     this.props.dispatch({
       type: 'activitiManagerModel/delMainData',
-      payload: { deploymentId: payload.id },
+      payload: { deploymentId: id },
       callback: (value) => {
         if (checkError(value)) {
           this.getMainData();
@@ -188,11 +201,19 @@ class App extends React.Component {
     this.setState({ visible: true, status, modalDataObj: record });
   };
 
-
   // 修改分页
   onChangePage = (data) => {
     // 获取分页数据
     this.getMainData({ ...getPageParam(data) });
+  };
+
+  onClickDel = () => {
+    console.log('selectedRow', this.selectedRow);
+    if (this.selectedRow.length > 0) {
+      this.showDelCon(this.selectedRow);
+    } else {
+      message.warning('请选择数据');
+    }
   };
 
   // 删除弹框确认
@@ -226,9 +247,14 @@ class App extends React.Component {
     this.setState({ dVisible: true, status: 'add' });
   };
 
-  onClickAddShow=()=>{
+  // 表格多选
+  onSelectChange = (selectedRowKeys, selectedRow) => {
+    this.selectedRow = selectedRow;
+  };
 
-  }
+  onClickAddShow = () => {
+
+  };
 
   render() {
     const { loading, visible, status, modalDataObj, processImg, dVisible } = this.state;
@@ -236,6 +262,13 @@ class App extends React.Component {
     const { pageNumber, total, pageSize, rows } = mainData;
 
     // 流程状态: 未发布、启用、停用
+    const rowSelection = {
+      onChange: this.onSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.version === 2, // 版本为 2 不能使用checkbox
+      }),
+    };
+
 
     return (
       <div>
@@ -249,28 +282,27 @@ class App extends React.Component {
           />
 
           <ConRadioGroup
-
             onClickAdd={this.onClickAddShow}
-            onClickDel={this.onClickAddShow}
+            onClickDel={this.onClickDel}
             onClickExport={this.onClickAddShow}
             onClickSet={this.onClickAddShow}
-            onClickRefresh={this.onClickRefresh}
+            onClickRefresh={this.onClickAddShow}
           />
           {/*<div className="table-header-btn">*/}
-            {/*<Radio.Group>*/}
-              {/*<Radio.Button value="add" onClick={this.onClickAddShow}>添加</Radio.Button>*/}
-              {/*/!*<Radio.Button value="del">删除</Radio.Button>*!/*/}
-              {/*<Radio.Button value="">刷新</Radio.Button>*/}
-              {/*<Radio.Button value="export">导出</Radio.Button>*/}
-              {/*<Radio.Button value="set">设置</Radio.Button>*/}
-            {/*</Radio.Group>*/}
+          {/*<Radio.Group>*/}
+          {/*<Radio.Button value="add" onClick={this.onClickAddShow}>添加</Radio.Button>*/}
+          {/*/!*<Radio.Button value="del">删除</Radio.Button>*!/*/}
+          {/*<Radio.Button value="">刷新</Radio.Button>*/}
+          {/*<Radio.Button value="export">导出</Radio.Button>*/}
+          {/*<Radio.Button value="set">设置</Radio.Button>*/}
+          {/*</Radio.Group>*/}
           {/*</div>*/}
 
           {/*查看流程部署*/}
           <Table
             className={styles.table}
             rowKey={record => record.id.toString()}
-            // rowSelection={rowSelection}
+            rowSelection={rowSelection}
             columns={this.columns}
             size="small"
             dataSource={rows}

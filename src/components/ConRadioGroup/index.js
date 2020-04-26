@@ -22,19 +22,19 @@ class ConRadioGroup extends React.Component {
       <div className="table-header-btn">
         <Radio.Group>
           {onClickAdd &&
-          <Radio.Button value="add" onClick={onClickAdd()}>添加</Radio.Button>
+          <Radio.Button value="add" onClick={()=>onClickAdd()}>添加</Radio.Button>
           }
           {onClickDel &&
-          <Radio.Button value="del" onClick={onClickDel()}>删除</Radio.Button>
+          <Radio.Button value="del" onClick={()=>onClickDel()}>删除</Radio.Button>
           }
           {onClickRefresh &&
-          <Radio.Button value="refresh" onClick={onClickRefresh()}>刷新</Radio.Button>
+          <Radio.Button value="refresh" onClick={()=>onClickRefresh()}>刷新</Radio.Button>
           }
           {onClickExport &&
-          <Radio.Button value="export" onClick={onClickExport()}>导出</Radio.Button>
+          <Radio.Button value="export" onClick={()=>onClickExport()}>导出</Radio.Button>
           }
           {onClickSet &&
-          <Radio.Button value="set" onClick={onClickSet()}>设置</Radio.Button>
+          <Radio.Button value="set" onClick={()=>onClickSet()}>设置</Radio.Button>
           }
 
         </Radio.Group>

@@ -1,12 +1,33 @@
 import React, { Component } from 'react';
 
-import { Form, Modal, Radio, Icon, Tooltip } from 'antd';
+import { Form, Modal, Radio, Icon, Tooltip, Input } from 'antd';
 import styles from './index.less';
 
+function hasErrors(fieldsError) {
+  return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
+
+
+@Form.create()
 class EditingTools extends Component {
+  state = {
+    deploymentName: this.props.deploymentName,
+  };
+
   handleOpen = () => {
     this.file.click();
   };
+
+  onChangeName = (value) => {
+    this.setState({ deploymentName: value.target.value });
+  };
+
+  onSave = () => {
+    const { deploymentName } = this.state;
+    debugger;
+    this.props.onSave(deploymentName);
+  };
+
 
   render() {
     const {
@@ -16,12 +37,14 @@ class EditingTools extends Component {
       onZoomReset,
       onUndo,
       onRedo,
-      onSave,
       onDownloadXml,
       onDownloadSvg,
       onFullScreen,
       onFullScreenExit,
     } = this.props;
+
+    const { deploymentName } = this.state;
+
     return (
       <div className={styles.editingTools}>
         <ul className={styles.controlList}>
@@ -45,7 +68,7 @@ class EditingTools extends Component {
           {/*撤销流程*/}
           {onUndo &&
           <li className={styles.control}>
-            <Tooltip placement="top"  title="撤销流程">
+            <Tooltip placement="top" title="撤销流程">
               <Icon type="undo" className={styles.controlIcon} onClick={onUndo}/>
             </Tooltip>
           </li>
@@ -81,8 +104,8 @@ class EditingTools extends Component {
           {/*缩小*/}
           {onZoomOut &&
           <li className={`${styles.control} ${styles.line}`}>
-            <Tooltip placement="top"  title="缩小">
-              <Icon type="zoom-out"  onClick={onZoomOut} className={styles.controlIcon}/>
+            <Tooltip placement="top" title="缩小">
+              <Icon type="zoom-out" onClick={onZoomOut} className={styles.controlIcon}/>
             </Tooltip>
           </li>
           }
@@ -109,7 +132,7 @@ class EditingTools extends Component {
 
           {/*图片下载*/}
           {onDownloadSvg &&
-          <li className={styles.control}>
+          <li className={`${styles.control} ${styles.line}`}>
             <Tooltip placement="top" title="图片下载">
               <Icon type="picture" className={styles.controlIcon} onClick={onDownloadSvg}/>
             </Tooltip>
@@ -127,20 +150,40 @@ class EditingTools extends Component {
           {onFullScreenExit &&
           <li className={styles.control}>
             <Tooltip placement="top" title="退出全屏">
-              <Icon type="fullscreen-exit"  onClick={onFullScreenExit} className={styles.controlIcon}/>
+              <Icon type="fullscreen-exit" onClick={onFullScreenExit} className={styles.controlIcon}/>
             </Tooltip>
           </li>
           }
-
         </ul>
         <ul className={styles.controlList}>
           <li className={styles.control}>
-            <Radio.Group>
-              <Radio.Button value="save" size={'small'} onClick={onSave}>保存</Radio.Button>
-              {/*<Radio.Button value="del">删除</Radio.Button>*/}
-              <Radio.Button value="pub" size={'small'}>发布</Radio.Button>
-              {/*<Radio.Button value="">全屏</Radio.Button>*/}
-            </Radio.Group>
+            <Form layout="inline">
+              <Form.Item validateStatus={deploymentName ? 'success' : 'error'}>
+                <Input
+                  allowClear
+                  placeholder="部署名称"
+                  onChange={this.onChangeName}
+                  defaultValue={deploymentName}
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Radio.Group>
+                  <Radio.Button
+                    value="save"
+                    size={'small'}
+                    onClick={this.onSave}
+                    disabled={!deploymentName}
+                  >保存</Radio.Button>
+                  <Radio.Button
+                    value="pub"
+                    size={'small'}
+                    disabled={!deploymentName}
+                  >发布</Radio.Button>
+                </Radio.Group>
+              </Form.Item>
+
+            </Form>
           </li>
         </ul>
       </div>

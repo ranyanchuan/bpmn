@@ -87,9 +87,9 @@ export default class App extends Component {
   };
 
   // 保存
-  handleSave = () => {
+  handleSave = (data) => {
     this.bpmnModeler.saveXML({ format: true }, (err, xml) => {
-      console.log(xml);
+      console.log(data,xml);
     });
   };
 
