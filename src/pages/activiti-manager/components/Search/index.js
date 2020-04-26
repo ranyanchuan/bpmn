@@ -59,8 +59,8 @@ class Search extends React.Component {
           onSubmit={this.handleSearch}
         >
 
-          <Row gutter={24}>
-            <Col span={6}>
+          <Row >
+            <Col  xs={6} sm={6} md={6} lg={7} xl={7}>
               <ConInput
                 form={form}
                 formItemLayout={formItemLayout}
@@ -69,11 +69,11 @@ class Search extends React.Component {
                 placeholder="部署名称"
               />
             </Col>
-          </Row>
-          <Row>
-            <Col span={24} className="search-footer">
-              <Button type="primary" htmlType="submit">查询</Button>
-              <Button style={{marginLeft: 8}} onClick={this.handleReset}>清空</Button>
+            <Col xs={6} sm={6} md={6} lg={4} xl={4} className="search-footer">
+              <div>
+                <Button type="primary" htmlType="submit">查询</Button>
+                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>清空</Button>
+              </div>
             </Col>
           </Row>
         </Form>

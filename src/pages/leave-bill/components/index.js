@@ -1,13 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Input, Table, Spin, Divider, Radio, Modal } from 'antd';
+import { Table, Spin, Divider, Radio, Modal } from 'antd';
 import { checkError, checkEdit, getPageParam } from 'utils';
 import moment from 'moment';
 import Search from './Search';
 import ActionModal from './Modal';
 import ApproveModal from './AModal';
-// import { Designer } from 'components/ConActiviti';
-
 
 const ruleTime = 'YYYY-MM-DD HH:mm:ss';
 const ruleDate = 'YYYY-MM-DD';
@@ -113,9 +111,9 @@ class App extends React.Component {
   };
 
   // 查看审批面板
-  onClickApprove=()=>{
+  onClickApprove = () => {
     this.setState({ status: 'edit', approveVisible: true });
-  }
+  };
 
   // 添加弹框
   onClickAddShow = () => {
@@ -123,7 +121,7 @@ class App extends React.Component {
   };
 
   onClickClose = () => {
-    this.setState({ visible: false,approveVisible:false });
+    this.setState({ visible: false, approveVisible: false });
   };
 
 
@@ -218,7 +216,7 @@ class App extends React.Component {
 
   render() {
 
-    const { loading, visible,approveVisible, modalDataObj, status } = this.state;
+    const { loading, visible, approveVisible, modalDataObj, status } = this.state;
     const { mainData } = this.props.leaveBillModel;
     const { pageNumber, total, pageSize, rows } = mainData;
 
@@ -230,6 +228,36 @@ class App extends React.Component {
           <Search
             onSearch={this.onSearchPanel}
             onRef={(value) => this.childSearch = value}
+          />
+
+          <div className="table-header-btn">
+            <Radio.Group>
+              <Radio.Button value="add" onClick={this.onClickAddShow}>添加</Radio.Button>
+              {/*<Radio.Button value="del">删除</Radio.Button>*/}
+              <Radio.Button value="">刷新</Radio.Button>
+              <Radio.Button value="export">导出</Radio.Button>
+              <Radio.Button value="set">设置</Radio.Button>
+            </Radio.Group>
+          </div>
+
+          <Table
+            className={styles.table}
+            rowKey={record => record.id.toString()}
+            columns={this.columns}
+            size="small"
+            dataSource={rows}
+            pagination={{
+              showQuickJumper: true,
+              showSizeChanger: true,
+              defaultPageSize: pageSize,
+              pageSizeOptions: ['10', '20', '50', '100', '500'],
+              current: pageNumber,
+              total,
+              pageSize: pageSize,
+              showTotal: total => `总共 ${total} 条`,
+            }}
+            // loading={loading}
+            onChange={this.onChangePage}
           />
 
 
@@ -252,38 +280,6 @@ class App extends React.Component {
 
           />
 
-
-          <div className="table-header-btn">
-            <Radio.Group>
-              <Radio.Button value="add" onClick={this.onClickAddShow}>添加</Radio.Button>
-              {/*<Radio.Button value="del">删除</Radio.Button>*/}
-              <Radio.Button value="">刷新</Radio.Button>
-              <Radio.Button value="export">导出</Radio.Button>
-              <Radio.Button value="set">设置</Radio.Button>
-            </Radio.Group>
-          </div>
-          <Table
-            className={styles.table}
-            rowKey={record => record.id.toString()}
-            columns={this.columns}
-            size="small"
-            dataSource={rows}
-            pagination={{
-              showQuickJumper: true,
-              showSizeChanger: true,
-              defaultPageSize: pageSize,
-              pageSizeOptions: ['10', '20', '50', '100', '500'],
-              current: pageNumber,
-              total,
-              pageSize: pageSize,
-              showTotal: total => `总共 ${total} 条`,
-            }}
-            // loading={loading}
-            onChange={this.onChangePage}
-          />
-
-
-          {/*<Designer />*/}
         </Spin>
       </div>
     );

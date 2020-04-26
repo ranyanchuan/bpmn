@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Button, Modal, Table, Divider, Spin } from 'antd';
+import { Button, Modal, Table, Divider, Spin, Radio } from 'antd';
 import { checkError, checkEdit, getPageParam } from 'utils';
 import ActionModal from './Modal';
 import DesignerModal from './DModal';
 // import CTable from './CTable';
+import ConRadioGroup from 'components/ConRadioGroup';
 import Search from './Search';
 
 const confirm = Modal.confirm;
 import styles from './index.less';
-
 
 @connect((state) => ({
   activitiManagerModel: state.activitiManagerModel,
@@ -72,6 +72,7 @@ class App extends React.Component {
       title: '流程版本',
       dataIndex: 'version',
       key: 'version',
+      align:'right'
     },
 
     {
@@ -225,12 +226,19 @@ class App extends React.Component {
     this.setState({ dVisible: true, status: 'add' });
   };
 
+  onClickAddShow=()=>{
+
+  }
+
   render() {
     const { loading, visible, status, modalDataObj, processImg, dVisible } = this.state;
     const { mainData } = this.props.activitiManagerModel;
     const { pageNumber, total, pageSize, rows } = mainData;
+
+    // 流程状态: 未发布、启用、停用
+
     return (
-      <div className={styles.home}>
+      <div>
         <Spin spinning={loading}>
           {processImg &&
           <img src={processImg} alt=""/>
@@ -239,28 +247,24 @@ class App extends React.Component {
             onSearch={this.onSearchPanel}
             onRef={(value) => this.childSearch = value}
           />
-          <div className="table-operations">
-            <Button type={'primary'} onClick={this.onShowModal.bind(this, 'add')}>添加</Button>
-          </div>
 
-          {/*添加表单*/}
-          <ActionModal
-            visible={visible}
-            onSave={this.addData}
-            status={status}
-            onClose={this.onClickClose}
-            basicData={status !== 'add' ? modalDataObj : {}}
+          <ConRadioGroup
+
+            onClickAdd={this.onClickAddShow}
+            onClickDel={this.onClickAddShow}
+            onClickExport={this.onClickAddShow}
+            onClickSet={this.onClickAddShow}
+            onClickRefresh={this.onClickRefresh}
           />
-
-          {/*流程设计*/}
-          <DesignerModal
-            visible={dVisible}
-            onSave={this.addData}
-            status={status}
-            onClose={this.onClickClose}
-            basicData={status !== 'add' ? modalDataObj : {}}
-          />
-
+          {/*<div className="table-header-btn">*/}
+            {/*<Radio.Group>*/}
+              {/*<Radio.Button value="add" onClick={this.onClickAddShow}>添加</Radio.Button>*/}
+              {/*/!*<Radio.Button value="del">删除</Radio.Button>*!/*/}
+              {/*<Radio.Button value="">刷新</Radio.Button>*/}
+              {/*<Radio.Button value="export">导出</Radio.Button>*/}
+              {/*<Radio.Button value="set">设置</Radio.Button>*/}
+            {/*</Radio.Group>*/}
+          {/*</div>*/}
 
           {/*查看流程部署*/}
           <Table
@@ -278,8 +282,27 @@ class App extends React.Component {
               total,
               pageSize: pageSize,
             }}
+            scroll={{ x: 'max-content' }}
             // loading={loading}
             onChange={this.onChangePage}
+          />
+
+          {/*添加表单*/}
+          <ActionModal
+            visible={visible}
+            onSave={this.addData}
+            status={status}
+            onClose={this.onClickClose}
+            basicData={status !== 'add' ? modalDataObj : {}}
+          />
+
+          {/*流程设计*/}
+          <DesignerModal
+            visible={dVisible}
+            onSave={this.addData}
+            status={status}
+            onClose={this.onClickClose}
+            basicData={status !== 'add' ? modalDataObj : {}}
           />
 
           {/*查看流程定义*/}

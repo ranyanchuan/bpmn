@@ -95,9 +95,6 @@ class Search extends React.Component {
             </Col>
 
           </Row>
-          <Row>
-
-          </Row>
         </Form>
       </div>
     );
