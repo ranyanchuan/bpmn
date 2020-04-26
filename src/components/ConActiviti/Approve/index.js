@@ -8,7 +8,6 @@ import BpmnModeler from '../Modeler'; //流程设计器
 import activitiModdleDescriptor from '../Assets/activiti.json';
 import { checkError, checkEdit, downloadBpmn } from 'utils';
 
-
 import styles from '../index.less';
 
 export default class App extends Component {
@@ -126,6 +125,7 @@ export default class App extends Component {
           onZoomIn={() => this.handleZoom(0.1)}
           onZoomOut={() => this.handleZoom(-0.1)}
           onZoomReset={() => this.handleZoom()}
+          disabled={true}
         />
         <div id="approveCanvas" style={{ height: '380px' }}/>
       </div>

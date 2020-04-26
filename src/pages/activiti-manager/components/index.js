@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Badge, Modal, Table, Divider, Spin, message } from 'antd';
-import { checkError, checkEdit, getPageParam, delMore } from 'utils';
+import ConRadioGroup from 'components/ConRadioGroup';
 import ActionModal from './Modal';
 import DesignerModal from './DModal';
-// import CTable from './CTable';
-import ConRadioGroup from 'components/ConRadioGroup';
 import Search from './Search';
+import { checkError, checkEdit, getPageParam, delMore } from 'utils';
 
 const confirm = Modal.confirm;
 import styles from './index.less';
@@ -99,8 +98,8 @@ class App extends React.Component {
       render: (text, record) => (
         <span>
          {/*<Badge status="success" text="启用" />*/}
-         {/*<Badge status="error" text="停用" />*/}
-         <Badge status="processing" text="未发布" />
+          {/*<Badge status="error" text="停用" />*/}
+          <Badge status="processing" text="未发布"/>
        </span>
       ),
     },
@@ -243,8 +242,8 @@ class App extends React.Component {
 
 
   // 流程设计
-  onDesignerProcess = () => {
-    this.setState({ dVisible: true, status: 'add' });
+  onDesignerProcess = (record) => {
+    this.setState({ dVisible: true, status: 'edit', modalDataObj: record });
   };
 
   // 表格多选
@@ -252,8 +251,9 @@ class App extends React.Component {
     this.selectedRow = selectedRow;
   };
 
+  // 添加流程
   onClickAddShow = () => {
-
+    this.setState({ dVisible: true, status: 'add', modalDataObj: {} });
   };
 
   render() {
@@ -288,15 +288,7 @@ class App extends React.Component {
             onClickSet={this.onClickAddShow}
             onClickRefresh={this.onClickAddShow}
           />
-          {/*<div className="table-header-btn">*/}
-          {/*<Radio.Group>*/}
-          {/*<Radio.Button value="add" onClick={this.onClickAddShow}>添加</Radio.Button>*/}
-          {/*/!*<Radio.Button value="del">删除</Radio.Button>*!/*/}
-          {/*<Radio.Button value="">刷新</Radio.Button>*/}
-          {/*<Radio.Button value="export">导出</Radio.Button>*/}
-          {/*<Radio.Button value="set">设置</Radio.Button>*/}
-          {/*</Radio.Group>*/}
-          {/*</div>*/}
+
 
           {/*查看流程部署*/}
           <Table
@@ -336,10 +328,6 @@ class App extends React.Component {
             onClose={this.onClickClose}
             basicData={status !== 'add' ? modalDataObj : {}}
           />
-
-          {/*查看流程定义*/}
-          {/*<CTable pid={rowId} pObj={modalDataObj} actionStatus={true}/>*/}
-          {/*<CTable pid={rowId} pObj={modalDataObj} actionStatus={true}/>*/}
 
         </Spin>
       </div>

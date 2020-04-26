@@ -10,7 +10,9 @@ import customControlsModule from '../workflow/customControls';
 import activitiModdleDescriptor from '../Assets/activiti.json';
 import { diagramXML } from '../Assets/diagram.js';
 
-import { checkError, checkEdit,downloadBpmn } from 'utils';
+import { checkError, checkEdit, downloadBpmn } from 'utils';
+import { requestJson } from 'utils/request';
+
 
 import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -25,11 +27,25 @@ export default class App extends Component {
   };
 
   componentDidMount() {
+    this.initDesigner();
+  }
+
+
+  async componentWillReceiveProps(nextProps) {
+    const { visible, status } = nextProps;
+    if (visible) {
+      this.initDesigner(status);
+    }
+  }
+
+  initDesigner = (status) => {
+    if (this.bpmnModeler) {
+      this.bpmnModeler.detach();
+    }
 
     let customTranslateModule = {
       translate: ['value', customTranslate],
     };
-
 
     this.bpmnModeler = new BpmnModeler({
       container: '#canvas',
@@ -47,31 +63,36 @@ export default class App extends Component {
       },
     });
 
-    this.renderDiagram(diagramXML);
-    // 通过字符生成 getProcessImg
-    // this.getProcessImg({ deploymentId: '15001' });
 
-  }
-
-
-  // todo 动态 判断
-  // 获取流程图片
-  // getProcessImg = (payload = {}) => {
-  //   this.props.dispatch({
-  //     type: 'activitiDesignerModel/getProcessImg',
-  //     payload,
-  //     callback: (result) => {
-  //       let stateTemp = { loading: false };
-  //       if (checkError(result)) {
-  //         const { data } = result;
-  //         this.renderDiagram(data, 'open');
-  //       }
-  //       this.setState(stateTemp);
-  //     },
-  //   });
-  // };
+    if (status === 'add') {
+      this.renderDiagram(diagramXML);
+    } else {
+      // 通过字符生成 getProcessImg
+      this.getDataModel();
+    }
+  };
 
 
+  // 获取
+  getDataService = () => {
+    const { url, payload } = this.props;
+    return requestJson(url, {
+      method: 'GET',
+      payload,
+    });
+  };
+
+
+  getDataModel = async () => {
+    this.setState({ loading: true });
+    let result = await this.getDataService();
+    let stateTemp = { loading: false };
+    if (checkError(result, false)) {
+      const { data } = result;
+      this.renderDiagram(data, 'open');
+    }
+    this.setState(stateTemp);
+  };
 
   // 导入xml文件
   handleOpenFile = (e) => {
@@ -89,7 +110,14 @@ export default class App extends Component {
   // 保存
   handleSave = (data) => {
     this.bpmnModeler.saveXML({ format: true }, (err, xml) => {
-      console.log(data,xml);
+      console.log(data, xml);
+    });
+  };
+
+  // 发布
+  onPub = (data) => {
+    this.bpmnModeler.saveXML({ format: true }, (err, xml) => {
+      console.log(data, xml);
     });
   };
 
@@ -132,7 +160,6 @@ export default class App extends Component {
   };
 
 
-
   renderDiagram = (xml) => {
     this.bpmnModeler.importXML(xml, (err) => {
       if (err) {
@@ -161,14 +188,17 @@ export default class App extends Component {
     }
   };
 
+
   render() {
     const { cHeight } = this.state;
     return (
       <div style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
 
         <EditingTools
+          {...this.props}
           onOpenFIle={this.handleOpenFile}
           onSave={this.handleSave}
+          onPub={this.onPub}
           onUndo={this.handleUndo}
           onRedo={this.handleRedo}
           onDownloadSvg={this.handleDownloadSvg}
@@ -178,6 +208,7 @@ export default class App extends Component {
           onZoomReset={() => this.handleZoom()}
           onFullScreen={() => this.onFullScreen()}
           onFullScreenExit={() => this.onFullScreenExit()}
+
         />
 
         <div id="canvas" style={{ height: cHeight }}/>

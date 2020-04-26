@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 
-import { Form, Modal, Radio, Icon, Tooltip, Input } from 'antd';
+import { Form, Radio, Icon, Tooltip, Input } from 'antd';
 import styles from './index.less';
-
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
-
 
 @Form.create()
 class EditingTools extends Component {
   state = {
-    deploymentName: this.props.deploymentName,
+    deploymentName: '',
   };
+
+  async componentWillReceiveProps(nextProps) {
+    const { visible } = nextProps;
+    if (visible && nextProps.basicData) {
+      const deploymentName = nextProps.basicData.name;
+      this.setState({ deploymentName });
+    }
+  }
 
   handleOpen = () => {
     this.file.click();
@@ -22,15 +25,21 @@ class EditingTools extends Component {
     this.setState({ deploymentName: value.target.value });
   };
 
+  // 保存
   onSave = () => {
     const { deploymentName } = this.state;
-    debugger;
     this.props.onSave(deploymentName);
+  };
+  //  发布
+  onPub = () => {
+    const { deploymentName } = this.state;
+    this.props.onPub(deploymentName);
   };
 
 
   render() {
     const {
+      disabled = true,
       onOpenFIle,
       onZoomIn,
       onZoomOut,
@@ -44,6 +53,8 @@ class EditingTools extends Component {
     } = this.props;
 
     const { deploymentName } = this.state;
+
+    console.log('this.props.basicData', this.props.basicData);
 
     return (
       <div className={styles.editingTools}>
@@ -111,16 +122,6 @@ class EditingTools extends Component {
           }
 
 
-          {/*/!*保存*!/*/}
-          {/*{onSave &&*/}
-          {/*<li className={styles.control}>*/}
-          {/*<button type="button" title="保存" >*/}
-          {/*<i className={styles.save}/>*/}
-          {/*</button>*/}
-          {/*</li>*/}
-          {/*}*/}
-
-
           {/*bpmn文件下载*/}
           {onDownloadXml &&
           <li className={styles.control}>
@@ -155,6 +156,7 @@ class EditingTools extends Component {
           </li>
           }
         </ul>
+        {!disabled &&
         <ul className={styles.controlList}>
           <li className={styles.control}>
             <Form layout="inline">
@@ -163,12 +165,12 @@ class EditingTools extends Component {
                   allowClear
                   placeholder="部署名称"
                   onChange={this.onChangeName}
-                  defaultValue={deploymentName}
+                  value={deploymentName}
                 />
               </Form.Item>
 
               <Form.Item>
-                <Radio.Group>
+                <Radio.Group value={'pub'}>
                   <Radio.Button
                     value="save"
                     size={'small'}
@@ -178,14 +180,15 @@ class EditingTools extends Component {
                   <Radio.Button
                     value="pub"
                     size={'small'}
+                    onClick={this.onPub}
                     disabled={!deploymentName}
                   >发布</Radio.Button>
                 </Radio.Group>
               </Form.Item>
-
             </Form>
           </li>
         </ul>
+        }
       </div>
     );
   }

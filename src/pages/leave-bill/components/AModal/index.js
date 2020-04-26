@@ -56,7 +56,9 @@ class ActionModal extends React.Component {
         cancelText="取消"
         {...footer(disabled)}
         width="900px"
-        bodyStyle={{backgroundColor:'red'}}
+        bodyStyle={{
+          padding: 0,
+        }}
 
       >
         {/*<Spin spinning={loading}>*/}

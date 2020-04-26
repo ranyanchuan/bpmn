@@ -1,15 +1,14 @@
 import React from 'react';
-import { Form, Modal, Row, Col, Spin, Radio } from 'antd';
+import { Form, Modal } from 'antd';
 import { Designer } from 'components/ConActiviti';
 import ConDragTitle from 'components/ConDragTitle';
-
 
 import { footer, formatFormDate } from 'utils';
 
 const titleObj = {
-  add: '添加请假信息',
-  edit: '编辑请假信息',
-  desc: '查看请假信息',
+  add: '添加流程信息',
+  edit: '编辑流程信息',
+  desc: '查看流程信息',
 };
 
 @Form.create()
@@ -29,17 +28,6 @@ class ActionModal extends React.Component {
     }
     this.setState({ loading: false });
   };
-  //  提交form信息弹框
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (!err) {
-        this.setState({ loading: true });
-        this.props.onSave(formatFormDate(fieldsValue, ['leaveDate']), this.hideModal);
-      }
-    });
-  };
-
 
   onFullScreen = () => {
     this.setState({ isFullScreen: true });
@@ -50,15 +38,13 @@ class ActionModal extends React.Component {
   };
 
   render() {
-    const { loading, width, isFullScreen } = this.state;
-    const { visible, form, status, basicData = {} } = this.props;
-    const disabled = (status === 'desc') ? true : false;
+    const { loading, isFullScreen } = this.state;
+    const { visible, status, basicData = {} } = this.props;
     const title = <ConDragTitle title={titleObj[status]}/>;
     return (
       <Modal
         title={title}
         visible={visible}
-        onOk={this.handleSubmit}
         onCancel={this.hideModal}
         maskClosable={false}
         confirmLoading={loading}
@@ -79,6 +65,9 @@ class ActionModal extends React.Component {
           payload={{ deploymentId: '15001' }}
           onFullScreen={this.onFullScreen}
           onFullScreenExit={this.onFullScreenExit}
+          basicData={basicData}
+          status={status}
+          visible={visible}
         />
         {/*</Spin>*/}
       </Modal>

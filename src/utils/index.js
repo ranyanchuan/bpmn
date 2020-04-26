@@ -247,13 +247,15 @@ export function formatFormDateRange(formData, fieldArray, formatRule = 'YYYY-MM-
 
 
 // 请求放回错误处理
-export function checkError(value) {
+export function checkError(value, successInfo = true) {
   const { code, info } = value;
   if (code == -1) { // 请求错误
     message.error(info);
     return false;
   }
-  message.success(info);
+  if (successInfo) {
+    message.success(info);
+  }
   return true;
 }
 
