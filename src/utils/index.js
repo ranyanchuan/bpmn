@@ -79,10 +79,10 @@ export function randomObjArray(obj, len) {
 // 添加 status 和  uid
 export function addUidList(fileUrlList) {
   if (!fileUrlList || !Array.isArray(fileUrlList)) {
-    return fileUrlList
+    return fileUrlList;
   }
   const filesUrl = fileUrlList.map((item, index) => {
-    return {status: 'done', uid: index, url: item};
+    return { status: 'done', uid: index, url: item };
   });
   return filesUrl;
 };
@@ -118,7 +118,7 @@ export function treeMap(data, map, key) {
   }
 
   for (let item of data) {
-    let {children} = item;
+    let { children } = item;
     map[item[key]] = item;
     if (children) {
       treeMap(children, map, key);
@@ -149,7 +149,6 @@ export function formData(payload) {
   }
   return data;
 }
-
 
 
 export function converFileSize(limit) {
@@ -262,8 +261,8 @@ export function checkError(value) {
 export function getPageParam(data) {
   const { current, pageSize } = data;
   return {
-    pageNumber: current-1,
-    pageSize:pageSize,
+    pageNumber: current - 1,
+    pageSize: pageSize,
   };
 }
 
@@ -281,7 +280,7 @@ export function changeSelectVal(left, right) {
  数字保留有效数数字
  */
 export function numFixed(text, index = 2) {
-  return (text || text==0)   ? parseInt(text).toFixed(index) : null;
+  return (text || text == 0) ? parseInt(text).toFixed(index) : null;
 }
 
 export function deepCopy(obj) {
@@ -297,4 +296,39 @@ export function deepCopy(obj) {
   }
   return result;
 }
+
+
+//
+/**
+ * 下载xml/svg
+ *  @param  type  类型  svg / xml
+ *  @param  data  数据
+ *  @param  name  文件名称
+ */
+export function downloadBpmn(type, data, name) {
+  let dataTrack = '';
+  const a = document.createElement('a');
+
+  switch (type) {
+    case 'xml':
+      dataTrack = 'bpmn';
+      break;
+    case 'svg':
+      dataTrack = 'svg';
+      break;
+    default:
+      break;
+  }
+
+  name = name || `diagram.${dataTrack}`;
+
+  a.setAttribute('href', `data:application/bpmn20-xml;charset=UTF-8,${encodeURIComponent(data)}`);
+  a.setAttribute('target', '_blank');
+  a.setAttribute('dataTrack', `diagram:download-${dataTrack}`);
+  a.setAttribute('download', name);
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
 

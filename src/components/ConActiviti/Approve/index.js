@@ -6,26 +6,24 @@ import EditingTools from '../EditingTools';
 import BpmnModeler from '../Modeler'; //流程设计器
 
 import activitiModdleDescriptor from '../Assets/activiti.json';
-import { checkError, checkEdit, getPageParam } from 'utils';
+import { checkError, checkEdit, downloadBpmn } from 'utils';
+
 
 import styles from '../index.less';
 
 export default class App extends Component {
 
   state = {
-    scale: 1, // 流程图比例
+    scale: 1, // 流程图比例f
   };
 
   componentDidMount() {
-
-
     this.bpmnModeler = new BpmnModeler({
       container: '#approveCanvas',
       moddleExtensions: {
         activiti: activitiModdleDescriptor,
       },
     });
-
 
     // 通过字符生成 getProcessImg
     this.getDataModel();
@@ -51,55 +49,20 @@ export default class App extends Component {
       this.renderDiagram(data, 'open');
     }
     this.setState(stateTemp);
-
-  };
-
-
-  /**
-   * 下载xml/svg
-   *  @param  type  类型  svg / xml
-   *  @param  data  数据
-   *  @param  name  文件名称
-   */
-  download = (type, data, name) => {
-    let dataTrack = '';
-    const a = document.createElement('a');
-
-    switch (type) {
-      case 'xml':
-        dataTrack = 'bpmn';
-        break;
-      case 'svg':
-        dataTrack = 'svg';
-        break;
-      default:
-        break;
-    }
-
-    name = name || `diagram.${dataTrack}`;
-
-    a.setAttribute('href', `data:application/bpmn20-xml;charset=UTF-8,${encodeURIComponent(data)}`);
-    a.setAttribute('target', '_blank');
-    a.setAttribute('dataTrack', `diagram:download-${dataTrack}`);
-    a.setAttribute('download', name);
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   };
 
 
   // 下载SVG格式
   handleDownloadSvg = () => {
     this.bpmnModeler.saveSVG({ format: true }, (err, data) => {
-      this.download('svg', data);
+      downloadBpmn('svg', data);
     });
   };
 
   // 下载XML格式
   handleDownloadXml = () => {
     this.bpmnModeler.saveXML({ format: true }, (err, data) => {
-      this.download('xml', data);
+      downloadBpmn('xml', data);
     });
   };
 
@@ -148,10 +111,7 @@ export default class App extends Component {
             editParent[0].setAttribute('contenteditable', 'false');
           }
         });
-
-
       }
-
 
     });
   };

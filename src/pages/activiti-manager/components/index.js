@@ -216,7 +216,7 @@ class App extends React.Component {
 
   // 关闭弹框
   onClickClose = () => {
-    this.setState({ visible: false, status: 'add' });
+    this.setState({ visible: false, dVisible: false, status: 'add' });
   };
 
 

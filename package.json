@@ -35,6 +35,7 @@
     "bpmn-js": "^6.4.1",
     "bpmn-js-properties-panel": "^0.33.2",
     "camunda-bpmn-moddle": "^3.0.0",
+    "dragm": "^0.0.5",
     "dva": "2.4.1",
     "dva-logger": "1.0.0",
     "echarts": "4.6.0",

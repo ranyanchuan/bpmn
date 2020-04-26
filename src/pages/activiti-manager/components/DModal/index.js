@@ -1,9 +1,10 @@
 import React from 'react';
 import { Form, Modal, Row, Col, Spin, Radio } from 'antd';
 import { Designer } from 'components/ConActiviti';
+import ConDragTitle from 'components/ConDragTitle';
+
 
 import { footer, formatFormDate } from 'utils';
-
 
 const titleObj = {
   add: '添加请假信息',
@@ -12,7 +13,6 @@ const titleObj = {
 };
 
 @Form.create()
-
 class ActionModal extends React.Component {
 
   state = {
@@ -41,22 +41,22 @@ class ActionModal extends React.Component {
   };
 
 
-  onFullScreen = () => {;
+  onFullScreen = () => {
     this.setState({ isFullScreen: true });
   };
 
-  onFullScreenExit=()=>{
+  onFullScreenExit = () => {
     this.setState({ isFullScreen: false });
-  }
+  };
 
   render() {
     const { loading, width, isFullScreen } = this.state;
     const { visible, form, status, basicData = {} } = this.props;
     const disabled = (status === 'desc') ? true : false;
-
+    const title = <ConDragTitle title={titleObj[status]}/>;
     return (
       <Modal
-        title={titleObj[status]}
+        title={title}
         visible={visible}
         onOk={this.handleSubmit}
         onCancel={this.hideModal}

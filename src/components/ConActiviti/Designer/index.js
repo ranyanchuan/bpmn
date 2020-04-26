@@ -10,7 +10,7 @@ import customControlsModule from '../workflow/customControls';
 import activitiModdleDescriptor from '../Assets/activiti.json';
 import { diagramXML } from '../Assets/diagram.js';
 
-import { checkError, checkEdit, getPageParam } from 'utils';
+import { checkError, checkEdit,downloadBpmn } from 'utils';
 
 import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -72,38 +72,6 @@ export default class App extends Component {
   // };
 
 
-  /**
-   * 下载xml/svg
-   *  @param  type  类型  svg / xml
-   *  @param  data  数据
-   *  @param  name  文件名称
-   */
-  download = (type, data, name) => {
-    let dataTrack = '';
-    const a = document.createElement('a');
-
-    switch (type) {
-      case 'xml':
-        dataTrack = 'bpmn';
-        break;
-      case 'svg':
-        dataTrack = 'svg';
-        break;
-      default:
-        break;
-    }
-
-    name = name || `diagram.${dataTrack}`;
-
-    a.setAttribute('href', `data:application/bpmn20-xml;charset=UTF-8,${encodeURIComponent(data)}`);
-    a.setAttribute('target', '_blank');
-    a.setAttribute('dataTrack', `diagram:download-${dataTrack}`);
-    a.setAttribute('download', name);
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
 
   // 导入xml文件
   handleOpenFile = (e) => {
@@ -138,14 +106,14 @@ export default class App extends Component {
   // 下载SVG格式
   handleDownloadSvg = () => {
     this.bpmnModeler.saveSVG({ format: true }, (err, data) => {
-      this.download('svg', data);
+      downloadBpmn('svg', data);
     });
   };
 
   // 下载XML格式
   handleDownloadXml = () => {
     this.bpmnModeler.saveXML({ format: true }, (err, data) => {
-      this.download('xml', data);
+      downloadBpmn('xml', data);
     });
   };
 
@@ -162,6 +130,7 @@ export default class App extends Component {
       scale: newScale,
     });
   };
+
 
 
   renderDiagram = (xml) => {
