@@ -1,8 +1,9 @@
 import React from 'react';
-import { Form, Modal, Row, Col, Spin } from 'antd';
-import { Approve } from 'components/ConActiviti';
+import { Form, Modal, Row, Col, Spin, Radio } from 'antd';
+import { Designer } from 'components/ConActiviti';
 
 import { footer, formatFormDate } from 'utils';
+
 
 const titleObj = {
   add: '添加请假信息',
@@ -16,6 +17,8 @@ class ActionModal extends React.Component {
 
   state = {
     loading: false,
+    width: '1200px',
+    isFullScreen: false,
   };
 
   //  关闭添加信息弹框
@@ -38,14 +41,21 @@ class ActionModal extends React.Component {
   };
 
 
+  onFullScreen = () => {;
+    this.setState({ isFullScreen: true });
+  };
+
+  onFullScreenExit=()=>{
+    this.setState({ isFullScreen: false });
+  }
+
   render() {
-    const { loading } = this.state;
+    const { loading, width, isFullScreen } = this.state;
     const { visible, form, status, basicData = {} } = this.props;
     const disabled = (status === 'desc') ? true : false;
 
     return (
       <Modal
-        wrapClassName={'modal-wrap-fullscreen'}
         title={titleObj[status]}
         visible={visible}
         onOk={this.handleSubmit}
@@ -54,17 +64,21 @@ class ActionModal extends React.Component {
         confirmLoading={loading}
         okText="确认"
         cancelText="取消"
-        {...footer(disabled)}
-        width="900px"
-        bodyStyle={{backgroundColor:'red'}}
-
+        {...footer(true)}
+        width={isFullScreen ? '100%' : '1200px'}
+        bodyStyle={{
+          padding: 0,
+        }}
+        style={{
+          top: isFullScreen ? 0 : 100,
+        }}
       >
         {/*<Spin spinning={loading}>*/}
-        <Approve
-
+        <Designer
           url={'/api/bpm/select/processImg'}
           payload={{ deploymentId: '15001' }}
-
+          onFullScreen={this.onFullScreen}
+          onFullScreenExit={this.onFullScreenExit}
         />
         {/*</Spin>*/}
       </Modal>

@@ -262,8 +262,6 @@ class App extends React.Component {
               <Radio.Button value="set">设置</Radio.Button>
             </Radio.Group>
           </div>
-
-
           <Table
             className={styles.table}
             rowKey={record => record.id.toString()}

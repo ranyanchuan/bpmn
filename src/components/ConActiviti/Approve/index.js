@@ -4,19 +4,10 @@ import { requestJson } from 'utils/request';
 
 import EditingTools from '../EditingTools';
 import BpmnModeler from '../Modeler'; //流程设计器
-// import customTranslate from '../workflow/customTranslate/customTranslate';
-// import propertiesPanelModule from '../workflow/properties-panel';
-// import propertiesProviderModule from '../workflow/properties-panel/provider/activiti';
-// import customControlsModule from '../workflow/customControls';
 
 import activitiModdleDescriptor from '../Assets/activiti.json';
-import { diagramXML } from '../Assets/diagram.js';
-
 import { checkError, checkEdit, getPageParam } from 'utils';
 
-// import 'bpmn-js-properties-panel/styles/properties.less';
-// import 'bpmn-js/dist/assets/diagram-js.css';
-// import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from '../index.less';
 
 export default class App extends Component {
@@ -27,10 +18,6 @@ export default class App extends Component {
 
   componentDidMount() {
 
-    // let customTranslateModule = {
-    //   translate: ['value', customTranslate],
-    // };
-
 
     this.bpmnModeler = new BpmnModeler({
       container: '#approveCanvas',
@@ -40,19 +27,8 @@ export default class App extends Component {
     });
 
 
-    // this.renderDiagram(diagramXML);
     // 通过字符生成 getProcessImg
-    // this.getProcessImg({ deploymentId: '15001' });
     this.getDataModel();
-
-
-
-    // var d = document.getElementById( "t" );
-    // document.addEventListener( "keyup", function() {
-    //   d.innerHTML = d.innerHTML.replace( /<[^>]*>/g, "" );
-    // } );
-    //
-
   }
 
 
@@ -77,23 +53,6 @@ export default class App extends Component {
     this.setState(stateTemp);
 
   };
-
-  // todo 动态 判断
-  // 获取流程图片
-  // getProcessImg = (payload = {}) => {
-  //   this.props.dispatch({
-  //     type: 'activitiDesignerModel/getProcessImg',
-  //     payload,
-  //     callback: (result) => {
-  //       let stateTemp = { loading: false };
-  //       if (checkError(result)) {
-  //         const { data } = result;
-  //         this.renderDiagram(data, 'open');
-  //       }
-  //       this.setState(stateTemp);
-  //     },
-  //   });
-  // };
 
 
   /**
@@ -167,42 +126,31 @@ export default class App extends Component {
         console.log('导入成功');
 
 
-        // this.bpmnModeler.off(event,callback);
         let eventBus = this.bpmnModeler.get('eventBus');
 
-
-
-        this.bpmnModeler.triggerClickEvent();
         let events = [
-          // 'element.click',
+          'element.click',
           'element.dblclick',
-          // 'element.hover',
-          // 'element.out',
-          // 'element.mousedown',
-          // 'element.mouseup'
+          'element.hover',
+          'element.out',
+          'element.mousedown',
+          'element.mouseup',
         ];
-        events.forEach(function(event) {
-          eventBus.on(event, function(e) {
-            // console.log(event, 'on', e.element);
-            let editContent=document.getElementsByClassName('djs-direct-editing-content');
-            if(editContent && editContent.length>0){
-              editContent[0].setAttribute("contenteditable","false");
-            }
-            let editParent=document.getElementsByClassName('djs-direct-editing-parent');
-            if(editParent && editParent.length>0){
-              editParent[0].setAttribute("contenteditable","false");
-            }
-          });
+
+        // 防止双击进行编辑名称
+        eventBus.on('element.dblclick', function(e) {
+          let editContent = document.getElementsByClassName('djs-direct-editing-content');
+          if (editContent && editContent.length > 0) {
+            editContent[0].setAttribute('contenteditable', 'false');
+          }
+          let editParent = document.getElementsByClassName('djs-direct-editing-parent');
+          if (editParent && editParent.length > 0) {
+            editParent[0].setAttribute('contenteditable', 'false');
+          }
         });
 
 
-
       }
-
-
-
-
-
 
 
     });

@@ -15,12 +15,13 @@ import { checkError, checkEdit, getPageParam } from 'utils';
 import 'bpmn-js-properties-panel/styles/properties.less';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-import styles from '../index.less';
+import styles from './index.less';
 
 export default class App extends Component {
 
   state = {
     scale: 1, // 流程图比例
+    cHeight: '560px',
   };
 
   componentDidMount() {
@@ -51,8 +52,6 @@ export default class App extends Component {
     // this.getProcessImg({ deploymentId: '15001' });
 
   }
-
-
 
 
   // todo 动态 判断
@@ -175,17 +174,28 @@ export default class App extends Component {
     });
   };
 
+  // 全屏
+  onFullScreen = () => {
+    this.setState({ cHeight: document.documentElement.clientHeight - 120 + 'px' });
+    const { onFullScreen } = this.props;
+    if (onFullScreen) {
+      onFullScreen();
+    }
+  };
+
+  // 退出全屏
+  onFullScreenExit = () => {
+    this.setState({ cHeight: '560px' });
+    const { onFullScreenExit } = this.props;
+    if (onFullScreenExit) {
+      onFullScreenExit();
+    }
+  };
+
   render() {
-
+    const { cHeight } = this.state;
     return (
-      <div style={{ height: '100%' }}>
-        <div id="canvas" style={{ height: '680px' }}/>
-
-        <div
-          className={styles.propertiesPanelParent}
-          style={{ height: '100%' }}
-          id="js-properties-panel"
-        />
+      <div style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
 
         <EditingTools
           onOpenFIle={this.handleOpenFile}
@@ -197,7 +207,16 @@ export default class App extends Component {
           onZoomIn={() => this.handleZoom(0.1)}
           onZoomOut={() => this.handleZoom(-0.1)}
           onZoomReset={() => this.handleZoom()}
+          onFullScreen={() => this.onFullScreen()}
+          onFullScreenExit={() => this.onFullScreenExit()}
         />
+
+        <div id="canvas" style={{ height: cHeight }}/>
+        <div
+          className={styles.propertiesPanelParent}
+          id="js-properties-panel"
+        />
+
       </div>
     );
   }
