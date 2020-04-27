@@ -53,6 +53,7 @@ class EditingTools extends Component {
     } = this.props;
 
     const { deploymentName } = this.state;
+    debugger
 
     console.log('this.props.basicData', this.props.basicData);
 

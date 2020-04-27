@@ -1,18 +1,16 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Badge, Modal, Table, Divider, Spin, message,Layout } from 'antd';
+import { Badge, Modal, Table, Divider, Spin, message, Layout } from 'antd';
 import ConRadioGroup from 'components/ConRadioGroup';
 import ConTreeNode from 'components/ConTreeNode';
-
 
 import DesignerModal from './DModal'; // 流程设计组件
 import Search from './Search';
 import { checkError, checkEdit, getPageParam, delMore } from 'utils';
-
 import styles from './index.less';
 
 const confirm = Modal.confirm;
-const { Header, Footer, Sider, Content } = Layout;
+
 @connect((state) => ({
   activitiManagerModel: state.activitiManagerModel,
 }))
@@ -185,7 +183,6 @@ class App extends React.Component {
     });
   };
 
-
   //  onShowProcess
   onShowProcess = (data) => {
     this.getProcessImg({ deploymentId: data.id });
@@ -263,6 +260,13 @@ class App extends React.Component {
     this.setState({ loading });
   };
 
+
+  // 树节点点击
+  onSelectTree = (item) => {
+    console.log('item', item);
+  };
+
+
   render() {
     const { loading, visible, status, modalDataObj, processImg, dVisible } = this.state;
     const { mainData } = this.props.activitiManagerModel;
@@ -281,29 +285,18 @@ class App extends React.Component {
       <div>
         <Spin spinning={loading}>
 
-          {/*<Layout>*/}
-            {/*<Sider>*/}
-              {/**/}
-            {/*</Sider>*/}
-            {/*<Layout>*/}
-              {/*<Header>Header</Header>*/}
-              {/*<Content>Content</Content>*/}
-              {/*<Footer>Footer</Footer>*/}
-            {/*</Layout>*/}
-          {/*</Layout>*/}
-
-
-
           <div className="tree-card">
             <div className="left-tree">
               <ConTreeNode
                 url='/admin/shangpinfenlei/getByPid'
                 treeTitle='title'
-                treeId='id'
+                treeId='key'
                 // onRef={ref => this.cTree = ref}
                 onSelect={this.onSelectTree}
                 onLoading={this.onLoading}
                 showLine={true}
+                isParentDisabled={true}
+                defaultExpandAll={true}
               />
             </div>
             <div className="right-card">
@@ -313,6 +306,7 @@ class App extends React.Component {
               />
 
               <ConRadioGroup
+                defaultValue={'add'}
                 onClickAdd={this.onClickAddShow}
                 onClickDel={this.onClickDel}
                 onClickExport={this.onClickAddShow}

@@ -68,6 +68,7 @@ class ActionModal extends React.Component {
           basicData={basicData}
           status={status}
           visible={visible}
+          disabled={false}
         />
         {/*</Spin>*/}
       </Modal>
