@@ -89,9 +89,10 @@ class ConTreeNode extends React.Component {
     });
 
   render() {
+
     return (
       <Tree
-        checkable
+        {...this.props}
         onExpand={this.onExpand}
         expandedKeys={this.state.expandedKeys}
         autoExpandParent={this.state.autoExpandParent}
@@ -99,6 +100,7 @@ class ConTreeNode extends React.Component {
         checkedKeys={this.state.checkedKeys}
         onSelect={this.onSelect}
         selectedKeys={this.state.selectedKeys}
+
       >
         {this.renderTreeNodes(treeData)}
       </Tree>

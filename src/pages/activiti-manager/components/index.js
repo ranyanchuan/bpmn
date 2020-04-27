@@ -1,16 +1,18 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Badge, Modal, Table, Divider, Spin, message } from 'antd';
+import { Badge, Modal, Table, Divider, Spin, message,Layout } from 'antd';
 import ConRadioGroup from 'components/ConRadioGroup';
 import ConTreeNode from 'components/ConTreeNode';
+
 
 import DesignerModal from './DModal'; // 流程设计组件
 import Search from './Search';
 import { checkError, checkEdit, getPageParam, delMore } from 'utils';
 
-const confirm = Modal.confirm;
 import styles from './index.less';
 
+const confirm = Modal.confirm;
+const { Header, Footer, Sider, Content } = Layout;
 @connect((state) => ({
   activitiManagerModel: state.activitiManagerModel,
 }))
@@ -279,6 +281,18 @@ class App extends React.Component {
       <div>
         <Spin spinning={loading}>
 
+          {/*<Layout>*/}
+            {/*<Sider>*/}
+              {/**/}
+            {/*</Sider>*/}
+            {/*<Layout>*/}
+              {/*<Header>Header</Header>*/}
+              {/*<Content>Content</Content>*/}
+              {/*<Footer>Footer</Footer>*/}
+            {/*</Layout>*/}
+          {/*</Layout>*/}
+
+
 
           <div className="tree-card">
             <div className="left-tree">
@@ -289,6 +303,7 @@ class App extends React.Component {
                 // onRef={ref => this.cTree = ref}
                 onSelect={this.onSelectTree}
                 onLoading={this.onLoading}
+                showLine={true}
               />
             </div>
             <div className="right-card">
