@@ -86,8 +86,6 @@ export default class App extends Component {
         console.log('导入失败');
       } else {
         console.log('导入成功');
-
-
         let eventBus = this.bpmnModeler.get('eventBus');
 
         let events = [

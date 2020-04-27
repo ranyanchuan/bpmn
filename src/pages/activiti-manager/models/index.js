@@ -48,7 +48,6 @@ export default {
       }
     },
 
-
     // 删除一条主表数据
     * delMainData({ payload, callback }, { call, put, select }) {
       const data = yield call(services.delDeployment, payload);
@@ -65,28 +64,34 @@ export default {
       }
     },
 
-
-
-
-    //  获取子表数据
-    * getChildData({ payload, callback }, { call, put, select }) {
-      const { data } = yield call(services.getDefinition, payload);
-
-      let childData = initTable;
-      if (data) {
-        childData = data;
-        yield put({ type: 'updateState', res: { childData } });
-      }
+    //  保存流程定义
+    * saveProcessDefinition({ payload, callback }, { call, put, select }) {
+      const data = yield call(services.saveProcessDefinition, payload);
       if (callback) {
         callback(data);
       }
     },
-
-
-
-
-
-
+    // 发布流程定义
+    * pubProcessDefinition({ payload, callback }, { call, put, select }) {
+      const data = yield call(services.pubProcessDefinition, payload);
+      if (callback) {
+        callback(data);
+      }
+    },
+    // 启动流程定义
+    * startProcessDefinition({ payload, callback }, { call, put, select }) {
+      const data = yield call(services.startProcessDefinition, payload);
+      if (callback) {
+        callback(data);
+      }
+    },
+    // 停用流程定义
+    * stopProcessDefinition({ payload, callback }, { call, put, select }) {
+      const data = yield call(services.stopProcessDefinition, payload);
+      if (callback) {
+        callback(data);
+      }
+    },
 
   },
 

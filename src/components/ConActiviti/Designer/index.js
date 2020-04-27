@@ -19,6 +19,8 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './index.less';
 
+
+
 export default class App extends Component {
 
   state = {

@@ -32,8 +32,7 @@ body {
 .ant-advanced-search-form {
   padding: 8px;
   background: #fbfbfb;
-  border: 1px solid #d9d9d9;
-  /*border-radius: 6px;*/
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .ant-advanced-search-form .ant-form-item {
@@ -79,6 +78,14 @@ body {
   margin-bottom: 10px;
 }
 
+.ant-table-small {
+  border-bottom: 1px solid #e8e8e8;
+  border-top: 1px solid #e8e8e8;
+  border-left: 0px solid #e8e8e8;
+  border-right: 0px solid #e8e8e8;
+  border-radius: 0px;
+}
+
 /*表格按钮*/
 .table-header-btn {
   text-align: end;
@@ -87,16 +94,42 @@ body {
   margin-bottom: 8px;
 }
 
+/*左树右卡*/
+.tree-card {
+  display: flex;
+}
+
+.tree-card .left-tree {
+  background: #fbfbfb;
+  min-height: 100%;
+  min-width: 200px;
+  overflow-x: scroll;
+  border-right: 1px solid #e8e8e8;
+  padding: 8px;
+  -webkit-box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+  box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+}
+
+.tree-card .right-card {
+  /*padding: 24px;*/
+  background: #fbfbfb;
+  /*border: 1px solid #d9d9d9;*/
+  /*margin-left: 24px;*/
+  flex: auto;
+  min-width: 500px;
+}
+
 /*流程图展示*/
 #approveCanvas .djs-palette.two-column.open {
   display: none;
 }
+
 #approveCanvas .djs-context-pad.open {
   display: none;
 }
 
 /*bpmn logo*/
-.bjs-powered-by{
+.bjs-powered-by {
   display: none;
 }
 

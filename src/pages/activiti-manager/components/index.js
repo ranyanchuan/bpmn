@@ -2,8 +2,9 @@ import React from 'react';
 import { connect } from 'dva';
 import { Badge, Modal, Table, Divider, Spin, message } from 'antd';
 import ConRadioGroup from 'components/ConRadioGroup';
-import ActionModal from './Modal';
-import DesignerModal from './DModal';
+import ConTreeNode from 'components/ConTreeNode';
+
+import DesignerModal from './DModal'; // 流程设计组件
 import Search from './Search';
 import { checkError, checkEdit, getPageParam, delMore } from 'utils';
 
@@ -256,6 +257,10 @@ class App extends React.Component {
     this.setState({ dVisible: true, status: 'add', modalDataObj: {} });
   };
 
+  onLoading = (loading) => {
+    this.setState({ loading });
+  };
+
   render() {
     const { loading, visible, status, modalDataObj, processImg, dVisible } = this.state;
     const { mainData } = this.props.activitiManagerModel;
@@ -273,62 +278,64 @@ class App extends React.Component {
     return (
       <div>
         <Spin spinning={loading}>
-          {processImg &&
-          <img src={processImg} alt=""/>
-          }
-          <Search
-            onSearch={this.onSearchPanel}
-            onRef={(value) => this.childSearch = value}
-          />
-
-          <ConRadioGroup
-            onClickAdd={this.onClickAddShow}
-            onClickDel={this.onClickDel}
-            onClickExport={this.onClickAddShow}
-            onClickSet={this.onClickAddShow}
-            onClickRefresh={this.onClickAddShow}
-          />
 
 
-          {/*查看流程部署*/}
-          <Table
-            className={styles.table}
-            rowKey={record => record.id.toString()}
-            rowSelection={rowSelection}
-            columns={this.columns}
-            size="small"
-            dataSource={rows}
-            pagination={{
-              showSizeChanger: true,
-              defaultPageSize: pageSize,
-              pageSizeOptions: ['10', '20', '50', '100', '500'],
-              current: pageNumber,
-              total,
-              pageSize: pageSize,
-            }}
-            scroll={{ x: 'max-content' }}
-            // loading={loading}
-            onChange={this.onChangePage}
-          />
+          <div className="tree-card">
+            <div className="left-tree">
+              <ConTreeNode
+                url='/admin/shangpinfenlei/getByPid'
+                treeTitle='title'
+                treeId='id'
+                // onRef={ref => this.cTree = ref}
+                onSelect={this.onSelectTree}
+                onLoading={this.onLoading}
+              />
+            </div>
+            <div className="right-card">
+              <Search
+                onSearch={this.onSearchPanel}
+                onRef={(value) => this.childSearch = value}
+              />
 
-          {/*添加表单*/}
-          <ActionModal
-            visible={visible}
-            onSave={this.addData}
-            status={status}
-            onClose={this.onClickClose}
-            basicData={status !== 'add' ? modalDataObj : {}}
-          />
+              <ConRadioGroup
+                onClickAdd={this.onClickAddShow}
+                onClickDel={this.onClickDel}
+                onClickExport={this.onClickAddShow}
+                onClickSet={this.onClickAddShow}
+                onClickRefresh={this.onClickAddShow}
+              />
 
-          {/*流程设计*/}
-          <DesignerModal
-            visible={dVisible}
-            onSave={this.addData}
-            status={status}
-            onClose={this.onClickClose}
-            basicData={status !== 'add' ? modalDataObj : {}}
-          />
+              {/*查看流程部署*/}
+              <Table
+                className={styles.table}
+                rowKey={record => record.id.toString()}
+                rowSelection={rowSelection}
+                columns={this.columns}
+                size="small"
+                dataSource={rows}
+                pagination={{
+                  showSizeChanger: true,
+                  defaultPageSize: pageSize,
+                  pageSizeOptions: ['10', '20', '50', '100', '500'],
+                  current: pageNumber,
+                  total,
+                  pageSize: pageSize,
+                }}
+                scroll={{ x: 'max-content' }}
+                // loading={loading}
+                onChange={this.onChangePage}
+              />
 
+              {/*流程设计*/}
+              <DesignerModal
+                visible={dVisible}
+                onSave={this.addData}
+                status={status}
+                onClose={this.onClickClose}
+                basicData={status !== 'add' ? modalDataObj : {}}
+              />
+            </div>
+          </div>
         </Spin>
       </div>
     );
