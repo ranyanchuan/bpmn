@@ -193,7 +193,6 @@ export default class App extends Component {
 
   render() {
     const { cHeight } = this.state;
-    debugger
     return (
       <div style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
 
