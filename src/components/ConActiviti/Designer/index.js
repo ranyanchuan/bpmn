@@ -66,6 +66,98 @@ export default class App extends Component {
       // 通过字符生成 getProcessImg
       this.getDataModel();
     }
+
+
+    let eventBus = this.bpmnModeler.get('eventBus');
+    const bpmnjs = this.bpmnModeler;
+
+
+    let events = [
+      'element.click',
+      'element.dblclick',
+      'element.hover',
+      'element.out',
+      'element.mousedown',
+      'element.mouseup',
+    ];
+
+    eventBus.on('element.click', function(e) {
+      var elementRegistry =bpmnjs.get('elementRegistry');
+      const modeling = bpmnjs.get('modeling'); // 获取修改对象
+
+      var shape = e.element ? elementRegistry.get(e.element.id) : e.shape;
+      console.log("shape",shape);
+      console.log("shape.type",shape.type);
+      console.log(JSON.stringify(shape));
+
+      if(shape.type==='bpmn:Process'){
+
+        modeling.updateProperties(shape, {
+          isExecutable:true,
+          id:"xxx",
+        })
+
+        // debugger
+
+
+      }
+
+
+
+    });
+
+
+    // 双击进行编辑名称
+    eventBus.on('element.dblclick', function(e) {
+
+      const elementRegistry =bpmnjs.get('elementRegistry');  // 获取元素对象
+      const modeling = bpmnjs.get('modeling'); // 获取修改对象
+      const shape = e.element ? elementRegistry.get(e.element.id) : e.shape;
+
+
+      console.log("shape.type",shape.type);
+
+
+        // "bpmn:Task",
+        // "bpmn:ServiceTask",
+        // "bpmn:UserTask",
+        // "bpmn:BusinessRuleTask",
+        // "bpmn:ScriptTask",
+        // "bpmn:ReceiveTask",
+        // "bpmn:ManualTask",
+        // "bpmn:ExclusiveGateway",
+        // "bpmn:SequenceFlow",
+        // "bpmn:ParallelGateway",
+        // "bpmn:InclusiveGateway",
+        // "bpmn:EventBasedGateway",
+        // "bpmn:StartEvent",
+        // "bpmn:IntermediateCatchEvent",
+        // "bpmn:IntermediateThrowEvent",
+        // "bpmn:EndEvent",
+        // "bpmn:BoundaryEvent",
+        // "bpmn:CallActivity",
+        // "bpmn:SubProcess",
+        // "bpmn:Process"
+
+
+
+
+      if (shape.type === 'bpmn:Task') {
+        modeling.updateProperties(shape, {
+          name: '我是修改后的Task名称',
+          isExecutable:true,
+        })
+        debugger
+      }
+
+
+
+    });
+
+
+
+
+
   };
 
 
