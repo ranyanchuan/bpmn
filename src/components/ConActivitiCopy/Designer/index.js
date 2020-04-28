@@ -20,6 +20,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './index.less';
 
 
+
 export default class App extends Component {
 
   state = {
@@ -31,10 +32,15 @@ export default class App extends Component {
     this.initDesigner();
   }
 
-  initDesigner = () => {
 
-    const { status } = this.props;
+  async componentWillReceiveProps(nextProps) {
+    const { visible, status } = nextProps;
+    if (visible) {
+      this.initDesigner(status);
+    }
+  }
 
+  initDesigner = (status) => {
     if (this.bpmnModeler) {
       this.bpmnModeler.detach();
     }
@@ -211,6 +217,7 @@ export default class App extends Component {
           className={styles.propertiesPanelParent}
           id="js-properties-panel"
         />
+
       </div>
     );
   }

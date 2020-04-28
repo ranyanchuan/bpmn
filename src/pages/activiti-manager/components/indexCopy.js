@@ -7,7 +7,7 @@ import router from 'umi/router';
 import ConRadioGroup from 'components/ConRadioGroup';
 import ConTreeNode from 'components/ConTreeNode';
 
-
+import DesignerModal from './DModal'; // 流程设计组件
 import Search from './Search';
 import { checkError, checkEdit, getPageParam, delMore } from 'utils';
 import styles from './index.less';
@@ -186,12 +186,22 @@ class App extends React.Component {
     });
   };
 
+  //  onShowProcess
+  onShowProcess = (data) => {
+    this.getProcessImg({ deploymentId: data.id });
+  };
+
 
   // 搜索面板值
   onSearchPanel = (param) => {
     this.getMainData({ ...param });
   };
 
+
+  // 展示弹框
+  onShowModal = (status, record) => {
+    this.setState({ visible: true, status, modalDataObj: record });
+  };
 
   // 修改分页
   onChangePage = (data) => {
@@ -227,6 +237,13 @@ class App extends React.Component {
     });
   };
 
+
+  // 关闭弹框
+  onClickClose = () => {
+    this.setState({ visible: false, dVisible: false, status: 'add' });
+  };
+
+
   // 流程设计
   onDesignerProcess = (record) => {
     this.setState({ dVisible: true, status: 'edit', modalDataObj: record });
@@ -239,12 +256,13 @@ class App extends React.Component {
 
   // 添加流程
   onClickAddShow = () => {
-    router.push(`/activiti-manager/designer/`);
+    this.setState({ dVisible: true, status: 'add', modalDataObj: {} });
   };
 
   onLoading = (loading) => {
     this.setState({ loading });
   };
+
 
   onClickExport = () => {
     router.push(`/activiti-manager/designer/11`);
@@ -324,6 +342,14 @@ class App extends React.Component {
                 onChange={this.onChangePage}
               />
 
+              {/*流程设计*/}
+              <DesignerModal
+                visible={dVisible}
+                onSave={this.addData}
+                status={status}
+                onClose={this.onClickClose}
+                basicData={status !== 'add' ? modalDataObj : {}}
+              />
             </div>
           </div>
         </Spin>
