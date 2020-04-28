@@ -54,7 +54,7 @@ class ActivitiDesigner extends React.Component {
               // onFullScreen={this.onFullScreen}
               // onFullScreenExit={this.onFullScreenExit}
               basicData={{}}
-              status={'add'}
+              status={'edit'}
               disabled={false}
             />
 
