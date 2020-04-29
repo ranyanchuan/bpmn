@@ -7,6 +7,10 @@ import propertiesPanelModule from '../workflow/properties-panel';
 import propertiesProviderModule from '../workflow/properties-panel/provider/activiti';
 import customControlsModule from '../workflow/customControls';
 
+
+import PropertiesPanel from '../PropertiesPanel';
+
+
 import activitiModdleDescriptor from '../Assets/activiti.json';
 import { diagramXML } from '../Assets/diagram.js';
 
@@ -25,6 +29,9 @@ export default class App extends Component {
   state = {
     scale: 1, // 流程图比例
     cHeight: '560px',
+    basicData: {},
+    shape: null,
+
   };
 
   componentDidMount() {
@@ -35,14 +42,17 @@ export default class App extends Component {
 
     const { status } = this.props;
 
+    // 二次加载 删除上一次数据
     if (this.bpmnModeler) {
       this.bpmnModeler.detach();
     }
 
+    // 国际化
     let customTranslateModule = {
       translate: ['value', customTranslate],
     };
 
+    // 初始化流程设计器
     this.bpmnModeler = new BpmnModeler({
       container: '#canvas',
       propertiesPanel: {
@@ -59,104 +69,23 @@ export default class App extends Component {
       },
     });
 
-
     if (status === 'add') {
       this.renderDiagram(diagramXML);
     } else {
-      // 通过字符生成 getProcessImg
+      // 通过字符生成 getProcessImgbpmnjs
       this.getDataModel();
     }
 
-
-    let eventBus = this.bpmnModeler.get('eventBus');
+    // 让图能自适应屏幕
     const bpmnjs = this.bpmnModeler;
-
-
-    let events = [
-      'element.click',
-      'element.dblclick',
-      'element.hover',
-      'element.out',
-      'element.mousedown',
-      'element.mouseup',
-    ];
-
+    bpmnjs.get('canvas').zoom('fit-viewport');
+    let eventBus = bpmnjs.get('eventBus');
+    const that = this;
     eventBus.on('element.click', function(e) {
-      var elementRegistry =bpmnjs.get('elementRegistry');
-      const modeling = bpmnjs.get('modeling'); // 获取修改对象
-
-      var shape = e.element ? elementRegistry.get(e.element.id) : e.shape;
-      console.log("shape",shape);
-      console.log("shape.type",shape.type);
-      console.log(JSON.stringify(shape));
-
-      if(shape.type==='bpmn:Process'){
-
-        modeling.updateProperties(shape, {
-          isExecutable:true,
-          id:"xxx",
-        })
-
-        // debugger
-
-
-      }
-
-
-
-    });
-
-
-    // 双击进行编辑名称
-    eventBus.on('element.dblclick', function(e) {
-
-      const elementRegistry =bpmnjs.get('elementRegistry');  // 获取元素对象
-      const modeling = bpmnjs.get('modeling'); // 获取修改对象
+      const elementRegistry = bpmnjs.get('elementRegistry');
       const shape = e.element ? elementRegistry.get(e.element.id) : e.shape;
-
-
-      console.log("shape.type",shape.type);
-
-
-        // "bpmn:Task",
-        // "bpmn:ServiceTask",
-        // "bpmn:UserTask",
-        // "bpmn:BusinessRuleTask",
-        // "bpmn:ScriptTask",
-        // "bpmn:ReceiveTask",
-        // "bpmn:ManualTask",
-        // "bpmn:ExclusiveGateway",
-        // "bpmn:SequenceFlow",
-        // "bpmn:ParallelGateway",
-        // "bpmn:InclusiveGateway",
-        // "bpmn:EventBasedGateway",
-        // "bpmn:StartEvent",
-        // "bpmn:IntermediateCatchEvent",
-        // "bpmn:IntermediateThrowEvent",
-        // "bpmn:EndEvent",
-        // "bpmn:BoundaryEvent",
-        // "bpmn:CallActivity",
-        // "bpmn:SubProcess",
-        // "bpmn:Process"
-
-
-
-
-      if (shape.type === 'bpmn:Task') {
-        modeling.updateProperties(shape, {
-          name: '我是修改后的Task名称',
-          isExecutable:true,
-        })
-        debugger
-      }
-
-
-
+      that.setState({ shape }); // 缓存 shape
     });
-
-
-
-
 
   };
 
@@ -254,6 +183,20 @@ export default class App extends Component {
         console.log('导入失败');
       } else {
         console.log('导入成功');
+
+        const elementRegistry = this.bpmnModeler.get('elementRegistry');
+        const shapeList = elementRegistry.filter((item) => {
+          return item.type === 'bpmn:Process';
+        });
+
+        this.setState({ shape: shapeList[0] }); // 缓存当前 shape
+
+
+        // this.bpmnModeler.get('modeling').updateProperties(shape, {
+        // this.bpmnModeler.get('modeling').updateProperties(shapeList[0], {
+        //   isExecutable: true,
+        //   name: '222222',
+        // });
       }
     });
   };
@@ -278,7 +221,7 @@ export default class App extends Component {
 
 
   render() {
-    const { cHeight } = this.state;
+    const { cHeight, basicData, shape } = this.state;
     return (
       <div style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
 
@@ -298,7 +241,16 @@ export default class App extends Component {
           onFullScreenExit={() => this.onFullScreenExit()}
         />
 
+
+        <PropertiesPanel
+          basicData={basicData}
+          bpmnModeler={this.bpmnModeler}
+          shape={shape}
+        />
+
         <div id="canvas" style={{ height: cHeight }}/>
+
+
         <div
           className={styles.propertiesPanelParent}
           id="js-properties-panel"
