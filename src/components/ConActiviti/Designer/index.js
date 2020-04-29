@@ -223,7 +223,7 @@ export default class App extends Component {
   render() {
     const { cHeight, basicData, shape } = this.state;
     return (
-      <div style={{ height: '100%', backgroundColor: '#f0f2f5' }}>
+      <div className={styles.designer}>
 
         <EditingTools
           {...this.props}

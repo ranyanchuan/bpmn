@@ -101,7 +101,7 @@ class CommonProperties extends Component {
     }
 
     return (
-      <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+      <Form {...formItemLayout} onSubmit={this.handleSubmit} className={styles.commonProperties}>
         {/*通用属性*/}
         {shape &&
         <span>
@@ -142,7 +142,7 @@ class CommonProperties extends Component {
         {shape && ['bpmn:UserTask'].includes(shape.type) &&
         <span>
           {/*详情*/}
-          <Divider orientation="left">详情</Divider>
+          <Divider orientation="left">详情信息</Divider>
           <Form.Item label="审批人">
           {getFieldDecorator('assignee', {
             initialValue: this.getShapeValue('assignee'),
