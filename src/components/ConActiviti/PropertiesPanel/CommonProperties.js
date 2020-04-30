@@ -302,7 +302,6 @@ class CommonProperties extends Component {
 
         {shape &&
         <span>
-
           <Divider orientation="left">文档信息</Divider>
           <Form.Item label="元素文档">
           {getFieldDecorator('text', {
