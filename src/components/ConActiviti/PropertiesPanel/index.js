@@ -4,6 +4,7 @@ import { Tabs, Affix } from 'antd';
 import styles from './index.less';
 import CommonProperties from './CommonProperties.js';
 import ExpandProperties from './ExpandProperties.js';
+import ListenerProperties from './ListenerProperties.js';
 
 const { TabPane } = Tabs;
 
@@ -35,6 +36,9 @@ class PropertiesPanel extends Component {
         {/*tab*/}
         {defaultActiveKey == '1' &&
         <CommonProperties {...this.props}/>
+        }
+        {defaultActiveKey == '3' &&
+        <ListenerProperties {...this.props}/>
         }
         {defaultActiveKey == '5' &&
         <ExpandProperties {...this.props}/>

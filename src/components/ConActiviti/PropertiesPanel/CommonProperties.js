@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Form, Radio, Icon, Tooltip, Input, Row, Col, Checkbox, Tabs, Divider } from 'antd';
+import { Form, Icon, Tooltip, Input, Checkbox, Divider } from 'antd';
 
 import styles from './index.less';
 
