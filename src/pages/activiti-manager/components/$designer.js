@@ -50,7 +50,7 @@ class ActivitiDesigner extends React.Component {
 
             <Designer
               url={'/api/bpm/select/processImg'}
-              payload={{ deploymentId: '15001' }}
+              payload={{ deploymentId: '2501' }}
               // onFullScreen={this.onFullScreen}
               // onFullScreenExit={this.onFullScreenExit}
               basicData={{}}

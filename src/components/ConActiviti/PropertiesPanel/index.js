@@ -10,7 +10,7 @@ const { TabPane } = Tabs;
 class PropertiesPanel extends Component {
 
   state = {
-    defaultActiveKey: '1',
+    defaultActiveKey: '5',
   };
 
   // tab 页切换

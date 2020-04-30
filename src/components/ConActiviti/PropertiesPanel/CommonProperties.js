@@ -74,11 +74,11 @@ class CommonProperties extends Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 7 },
+        sm: { span: 6 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 17 },
+        sm: { span: 18 },
       },
     };
 
@@ -90,7 +90,7 @@ class CommonProperties extends Component {
         },
         sm: {
           span: 16,
-          offset: 8,
+          offset: 6,
         },
       },
     };
