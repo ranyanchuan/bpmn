@@ -73,13 +73,34 @@ class ExpandProperties extends React.Component {
     return s.join('');
   };
 
+
+  getAIndex = (extensionElements) => {
+    let isNew = false;
+    let aIndex = 0;
+    let values = null;
+    if (extensionElements && extensionElements.values) { // 已经存在扩展字段
+      values = extensionElements.values;
+      for (let [vIndex, item] of extensionElements.values.entries()) {
+        if (item['$type'] === 'activiti:Properties') {
+          isNew = true;
+          aIndex = vIndex;
+          break;
+        }
+      }
+    }
+    return { isNew, aIndex, values };
+  };
+
+
   // 删除
   onDel = (index) => {
     const { bpmnModeler, shape } = this.props;
 
     let extensionElements = shape.businessObject.extensionElements;
     const { values } = extensionElements;
-    values[0].values.splice(index, 1);
+    const { aIndex } = this.getAIndex(extensionElements);
+
+    values[aIndex].values.splice(index, 1);
     bpmnModeler.get('modeling').updateProperties(shape, {
       extensionElements: extensionElements,
     });
@@ -91,12 +112,19 @@ class ExpandProperties extends React.Component {
     const { bpmnModeler, shape } = this.props;
     const v1 = bpmnModeler.get('moddle').create('activiti:Property', { name: '', value: '', id: this.uuid() });
     let extensionElements = shape.businessObject.extensionElements;
-    if (extensionElements) { // 已经存在扩展字段
-      const { values } = extensionElements;
-      values[0].values.unshift(v1);
+
+    let { isNew, aIndex, values } = this.getAIndex(extensionElements);
+
+    if (isNew) { // 已经存在扩展字段
+      values[aIndex].values.unshift(v1);
     } else {
       const v2 = bpmnModeler.get('moddle').create('activiti:Properties', { values: [v1] });
-      extensionElements = bpmnModeler.get('moddle').create('bpmn:ExtensionElements', { values: [v2] });
+      if (values) {
+        values.push(v2);
+      } else {
+        values = [v2];
+      }
+      extensionElements = bpmnModeler.get('moddle').create('bpmn:ExtensionElements', { values });
     }
 
     bpmnModeler.get('modeling').updateProperties(shape, {
@@ -111,7 +139,8 @@ class ExpandProperties extends React.Component {
     const { bpmnModeler, shape } = this.props;
     const { extensionElements } = shape.businessObject;
     const { values } = extensionElements;
-    values[0].values[index][key] = data;
+    const { isNew, aIndex } = this.getAIndex(extensionElements);
+    values[aIndex].values[index][key] = data;
     bpmnModeler.get('modeling').updateProperties(shape, {
       extensionElements: extensionElements,
     });
@@ -122,7 +151,8 @@ class ExpandProperties extends React.Component {
     const { shape } = this.props;
     let dataSource = [];
     if (shape && shape.businessObject.extensionElements) {
-      dataSource = shape.businessObject.extensionElements.values[0].values;
+      const { isNew, aIndex } = this.getAIndex(shape.businessObject.extensionElements);
+      dataSource = shape.businessObject.extensionElements.values[aIndex].values;
     }
     return (
       <div className={styles.expandProperties}>

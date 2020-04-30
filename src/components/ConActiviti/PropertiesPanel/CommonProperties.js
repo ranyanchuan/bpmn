@@ -12,12 +12,46 @@ class CommonProperties extends Component {
     deploymentName: '',
   };
 
-  // 可以执行文件
-  onChangeCheckbox = (value) => {
+  // 获取重试时间周期
+  getAIndex = (extensionElements) => {
+    let isNew = false;
+    let aIndex = 0;
+    let values = null;
+    if (extensionElements && extensionElements.values) { // 已经存在扩展字段
+      values = extensionElements.values;
+      for (let [vIndex, item] of extensionElements.values.entries()) {
+        if (item['$type'] === 'activiti:FailedJobRetryTimeCycle') {
+          isNew = true;
+          aIndex = vIndex;
+          break;
+        }
+      }
+    }
+    return { isNew, aIndex, values };
+  };
+
+  setRetryTimeCycleValue = (data) => {
     const { bpmnModeler, shape } = this.props;
+    let extensionElements = shape.businessObject.extensionElements;
+    let { isNew, aIndex, values } = this.getAIndex(extensionElements);
+
+    if (isNew) { // 已经存在扩展字段
+      values[aIndex].body = data;
+    } else {
+
+      const v2 = bpmnModeler.get('moddle').create('activiti:FailedJobRetryTimeCycle', { body: data });
+      if (values) {
+        values.push(v2);
+      } else {
+        values = [v2];
+      }
+      extensionElements = bpmnModeler.get('moddle').create('bpmn:ExtensionElements', { values });
+    }
     bpmnModeler.get('modeling').updateProperties(shape, {
-      isExecutable: value.target.checked,
+      extensionElements: extensionElements,
     });
+
+
   };
 
 
@@ -40,7 +74,6 @@ class CommonProperties extends Component {
     });
   };
 
-
   // 设置元素属性
   setShapeDocumentation = (key, data) => {
     const { bpmnModeler, shape } = this.props;
@@ -57,10 +90,14 @@ class CommonProperties extends Component {
 
     const { form, shape } = this.props;
 
+    let retryTimeCycle = '';
     if (shape) {
-      console.log(shape.businessObject);
+      if (shape && shape.businessObject.extensionElements) {
+        const { isNew, aIndex } = this.getAIndex(shape.businessObject.extensionElements);
+        retryTimeCycle = shape.businessObject.extensionElements.values[aIndex].body;
+      }
     }
-    
+
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -126,6 +163,76 @@ class CommonProperties extends Component {
             <Input placeholder="请输入节点名称"/>,
           )}
           </Form.Item>
+        </span>
+        }
+
+
+        {/*开始事件 bpmn:StartEvent*/}
+        {shape && ['bpmn:StartEvent'].includes(shape.type) &&
+        <span>
+          {/*详情*/}
+          <Divider orientation="left">详情信息</Divider>
+
+          <Form.Item label="创建者">
+          {getFieldDecorator('initiator', {
+            initialValue: this.getShapeValue('initiator'),
+            onChange: (e) => this.setShapeValue('initiator', e.target.value),
+          })(
+            <Input placeholder="请输入创建者"/>,
+          )}
+          </Form.Item>
+
+          {/*持续异步*/}
+          <Divider orientation="left">持续异步</Divider>
+          <Form.Item {...tailFormItemLayout}>
+          {getFieldDecorator('asyncBefore', {
+            valuePropName: 'checked',
+            initialValue: this.getShapeValue('asyncBefore'),
+            onChange: (e) => this.setShapeValue('asyncBefore', e.target.checked),
+          })(<Checkbox>异步前</Checkbox>)}
+        </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+          {getFieldDecorator('asyncAfter', {
+            valuePropName: 'checked',
+            initialValue: this.getShapeValue('asyncAfter'),
+            onChange: (e) => this.setShapeValue('asyncAfter', e.target.checked),
+          })(<Checkbox>异步后</Checkbox>)}
+        </Form.Item>
+
+          <Form.Item {...tailFormItemLayout}>
+          {getFieldDecorator('exclusive', {
+            valuePropName: 'checked',
+            initialValue: this.getShapeValue('exclusive'),
+            onChange: (e) => this.setShapeValue('exclusive', e.target.checked),
+
+          })(<Checkbox>排除</Checkbox>)}
+        </Form.Item>
+
+          {/*工作配置*/}
+          {(this.getShapeValue('asyncAfter') || this.getShapeValue('asyncBefore')) &&
+          <span>
+            <Divider orientation="left">工作配置</Divider>
+            <Form.Item label="工作优先级">
+            {getFieldDecorator('jobPriority', {
+              initialValue: this.getShapeValue('jobPriority'),
+              onChange: (e) => this.setShapeValue('jobPriority', e.target.value),
+            })(
+              <Input placeholder="请输入工作优先级"
+              />,
+            )}
+            </Form.Item>
+            <Form.Item label="重试时间周期">
+            {getFieldDecorator('retryTimeCycle', {
+              initialValue: retryTimeCycle,
+              onChange: (e) => this.setRetryTimeCycleValue(e.target.value),
+            })(
+              <Input placeholder="请输入重试时间周期"
+              />,
+            )}
+            </Form.Item>
+          </span>
+          }
+
         </span>
         }
 
@@ -219,7 +326,7 @@ class CommonProperties extends Component {
           {getFieldDecorator('isExecutable', {
             valuePropName: 'checked',
             initialValue: this.getShapeValue('isExecutable'),
-            onChange: this.onChangeCheckbox,
+            onChange: (e) => this.setShapeValue('isExecutable', e.target.checked),
           })(<Checkbox>可执行文件</Checkbox>)}
         </Form.Item>
 

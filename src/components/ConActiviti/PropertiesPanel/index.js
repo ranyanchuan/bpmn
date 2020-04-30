@@ -23,15 +23,14 @@ class PropertiesPanel extends Component {
     const { defaultActiveKey } = this.state;
     return (
       <div className={styles.propertiesPanel}>
-        <Affix offsetTop={0}>
-          <Tabs defaultActiveKey={defaultActiveKey} size={'small'} type="card" onChange={this.onChangeTab}>
-            <TabPane tab="常规" key="1"/>
-            <TabPane tab="表单" key="2"/>
-            <TabPane tab="监听器" key="3"/>
-            <TabPane tab="输入/输出" key="4"/>
-            <TabPane tab="扩展" key="5"/>
-          </Tabs>
-        </Affix>
+
+        <Tabs defaultActiveKey={defaultActiveKey} size={'small'} type="card" onChange={this.onChangeTab}>
+          <TabPane tab="常规" key="1"/>
+          <TabPane tab="表单" key="2"/>
+          <TabPane tab="监听器" key="3"/>
+          <TabPane tab="输入/输出" key="4"/>
+          <TabPane tab="扩展" key="5"/>
+        </Tabs>
 
         {/*tab*/}
         {defaultActiveKey == '1' &&
