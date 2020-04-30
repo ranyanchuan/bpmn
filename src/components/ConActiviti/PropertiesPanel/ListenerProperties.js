@@ -175,6 +175,11 @@ class ListenerProperties extends React.Component {
   };
 
 
+  onSelectChange=()=>{
+
+  }
+
+
   getAIndex = (extensionElements) => {
     let isNew = false;
     let aIndex = 0;
@@ -200,9 +205,14 @@ class ListenerProperties extends React.Component {
       const { isNew, aIndex, values } = this.getAIndex(shape.businessObject.extensionElements);
       console.log('values', values);
       executeData = values;
-      debugger;
     }
 
+    const rowSelection = {
+      onChange: this.onSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.version === 2, // 版本为 2 不能使用checkbox
+      }),
+    };
 
     return (
       <div className={styles.expandProperties}>
@@ -217,9 +227,10 @@ class ListenerProperties extends React.Component {
           </Radio.Group>
         </div>
         <Table
+          rowSelection={rowSelection}
           rowKey={(record, index) => index.toString()}
           size="small"
-          bordered
+          // bordered
           dataSource={executeData}
           columns={this.columns}
           pagination={false}
@@ -236,7 +247,7 @@ class ListenerProperties extends React.Component {
         <Table
           rowKey={(record, index) => index.toString()}
           size="small"
-          bordered
+          // bordered
           dataSource={executeData}
           columns={this.columnsTask}
           pagination={false}
@@ -252,7 +263,7 @@ class ListenerProperties extends React.Component {
         <Table
           rowKey={(record, index) => index.toString()}
           size="small"
-          bordered
+          // bordered
           dataSource={executeData}
           columns={this.columnsField}
           pagination={false}
