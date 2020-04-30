@@ -57,7 +57,7 @@ class ExpandProperties extends React.Component {
     },
   ];
 
-
+  // 生成唯一id
   uuid = () => {
     const s = [];
     const hexDigits = '0123456789abcdef';

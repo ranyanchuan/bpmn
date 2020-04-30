@@ -10,7 +10,6 @@ class CommonProperties extends Component {
 
   state = {
     deploymentName: '',
-    defaultActiveKey: '1',
   };
 
   // 可以执行文件
@@ -54,21 +53,14 @@ class CommonProperties extends Component {
   };
 
 
-  // tab 页切换
-  onChangeTab = () => {
-
-  };
-
   render() {
 
     const { form, shape } = this.props;
-    const { defaultActiveKey } = this.state;
 
     if (shape) {
       console.log(shape.businessObject);
     }
-
-
+    
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
